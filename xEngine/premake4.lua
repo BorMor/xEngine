@@ -9,6 +9,7 @@ project "xEngine"
     includedirs { "Include" }
     files { "**.h", "**.cpp", "**.inl" }
   if os.is("windows") then
+	excludes { "Dependencies/**" }
     includedirs { "Dependencies/pcre/Include" }
 	libdirs { "Dependencies/pcre/Lib" }
   end
