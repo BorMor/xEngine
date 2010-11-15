@@ -30,6 +30,9 @@ struct xIsPod
         enum { Value = false };
 };
 
+#define xTYPE_IS_POD(T)	\
+	template<> struct xIsPod<T> { enum { Value = true }; };
+
 template<typename T>
 struct xIsPointer
 {
