@@ -121,7 +121,7 @@ public:
 		}
 	}
 
-	void operator ()(A1 a1, A2 a2, A3)
+	void operator ()(A1 a1, A2 a2, A3 a3)
 	{
 		for (typename DelegateList::Iterator it = mDelegates.Begin(); it != mDelegates.End(); ++it)
 			(*it)->operator()(a1, a2, a3);

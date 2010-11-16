@@ -1,0 +1,5 @@
+added Data and SubString methods to String
+added Iterator to GroupCollection and MatchCollection
+added File::ReadToString method
+shaders moved from source code to files
+added simple ShaderPreprocessor

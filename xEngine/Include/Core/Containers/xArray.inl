@@ -72,7 +72,7 @@ size_t xArray<TYPE>::Capacity() const
 template<typename TYPE>
 bool xArray<TYPE>::IsEmpty() const
 {
-	return mSize == 0;
+	return mEnd == mBegin;
 }
 
 template<typename TYPE>
