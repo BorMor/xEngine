@@ -29,6 +29,7 @@ public:
 	xString& operator +=(const char c);
 
 	const xChar* c_str() const;
+	void* Data();
 	xChar& operator[](int index);
 	const xChar& operator[](int index) const;
 
@@ -38,6 +39,8 @@ public:
 	friend bool operator !=(const xString& a, const xString& b);
 
 	size_t Length() const;
+
+	xString SubString(size_t index, size_t length);
 
 	static xString Format(const xChar* format, ...);
 protected:

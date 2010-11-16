@@ -47,6 +47,7 @@ typedef float			xFloat;
 
 #include "IO/xConsole.h"
 #include "IO/xStream.h"
+#include "IO/xFile.h"
 #include "IO/xFileStream.h"
 #include "IO/xMemoryStream.h"
 #include "IO/xBinaryReader.h"
@@ -54,6 +55,7 @@ typedef float			xFloat;
 
 #include "Text/xRegex.h"
 
+#include "Graphics/xShader.h"
 #include "Graphics/xMaterial.h"
 #include "Graphics/xVertexFormat.h"
 #include "Graphics/xIndexBuffer.h"

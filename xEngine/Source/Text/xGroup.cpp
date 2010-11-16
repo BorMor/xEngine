@@ -35,6 +35,16 @@ xGroupCollection::~xGroupCollection()
 			delete *it;
 }
 
+xGroupCollection::Iterator xGroupCollection::Begin() const
+{
+	return mGroups.Begin();
+}
+
+xGroupCollection::Iterator xGroupCollection::End() const
+{
+	return mGroups.End();
+}
+
 const xGroup& xGroupCollection::operator[](int index) const
 {
 	return *mGroups[index];

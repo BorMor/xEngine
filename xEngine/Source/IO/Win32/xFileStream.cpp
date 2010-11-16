@@ -79,3 +79,10 @@ size_t xFileStream::Write(void* buffer, size_t count)
 	WriteFile(pImpl->mHandle, buffer, (DWORD)count, &written, NULL);
 	return (size_t)written;
 }
+
+size_t xFileStream::Size() const
+{
+	DWORD high = 0;
+	DWORD low =	GetFileSize(pImpl->mHandle, &high);
+	return low;
+}

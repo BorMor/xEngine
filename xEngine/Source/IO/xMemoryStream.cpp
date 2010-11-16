@@ -41,3 +41,8 @@ size_t xMemoryStream::Write(void* buffer, size_t count)
 	mPtr += count;
 	return count;
 }
+
+size_t xMemoryStream::Size() const
+{
+	return mSize;
+}

@@ -33,6 +33,7 @@ public:
 	virtual void Seek(size_t offset, xSeekOrigin::Enum origin) = 0;
 	virtual size_t Read(void* buffer, size_t count) = 0;
 	virtual size_t Write(void* buffer, size_t count) = 0;
+	virtual size_t Size() const = 0;
 protected:
 	xAccessMode::Enum mAccessMode;
 	bool mIsOpen;

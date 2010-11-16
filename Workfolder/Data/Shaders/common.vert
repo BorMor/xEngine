@@ -1,0 +1,2 @@
+#define ATTR_POSITION	0
+#define ATTR_DIFFUSE	2

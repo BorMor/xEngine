@@ -1,27 +1,5 @@
 #include <xEngine.h>
 
-const char vertex_shader[] = "	#version 330								\n\
-								layout(location = 0) in vec4 position;		\n\
-								layout(location = 2) in vec4 diffuse;		\n\
-								out vec4 color;								\n\
-																			\n\
-								void main(void)								\n\
-								{											\n\
-									gl_Position = position;					\n\
-									color = diffuse;						\n\
-								}											\n\
-							";
-
-const char fragment_shader[] = "	#version 330								\n\
-									in vec4 color;								\n\
-									out vec4 fragColor;							\n\
-																				\n\
-									void main(void)								\n\
-									{											\n\
-										fragColor = color;						\n\
-									}											\n\
-								";
-
 class Application : public xGraphicApplication
 {
 	struct Vertex
@@ -47,8 +25,8 @@ public:
 		mVertexBuffer->Unlock();
 
 		mMaterial = new xMaterial();
-		mMaterial->SetVertexShader(vertex_shader);
-		mMaterial->SetFragmentShader(fragment_shader);
+		mMaterial->SetVertexShader("Data/Shaders/basic.vert");
+		mMaterial->SetFragmentShader("Data/Shaders/basic.frag");
 		return true;
 	}
 
@@ -58,7 +36,6 @@ public:
 		mRenderDevice->SetVertexBuffer(mVertexBuffer);
 		mRenderDevice->SetMaterial(mMaterial);
 		mRenderDevice->DrawPrimitive(xPrimitiveType::TriangleList, 0, 3);
-		//xSleep(10);
 		mRenderDevice->Present();
 	}
 	

@@ -21,8 +21,13 @@ class xEXPORT xGroupCollection
 {
 	friend class xRegex;
 public:
+	typedef xArray<xGroup*>::Iterator Iterator;
+
 	xGroupCollection();
 	~xGroupCollection();
+
+	Iterator Begin() const;
+	Iterator End() const;
 
 	const xGroup& operator[](int index) const;
 	size_t Count() const;
@@ -48,9 +53,14 @@ class xEXPORT xMatchCollection
 {
 	friend class xRegex;
 public:
+	typedef xArray<xMatch*>::Iterator Iterator;
+
 	xMatchCollection();
 	xMatchCollection(xMatchCollection&& other);
 	~xMatchCollection();
+
+	Iterator Begin() const;
+	Iterator End() const;
 
 	const xMatch& operator[](int index) const;
 	size_t Count() const;

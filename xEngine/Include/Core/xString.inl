@@ -154,6 +154,12 @@ const xChar* xString::c_str() const
 }
 
 xFORCE_INLINE
+void* xString::Data()
+{
+	return mData;
+}
+
+xFORCE_INLINE
 xChar& xString::operator[](int index)
 {
 	return mData[index];
@@ -163,6 +169,15 @@ xFORCE_INLINE
 const xChar& xString::operator[](int index) const
 {
 	return mData[index];
+}
+xFORCE_INLINE
+xString xString::SubString(size_t index, size_t length)
+{
+	xString result;
+	result.Reserve(length+1);
+	memcpy(result.mData, mData + index, length);
+	result.mData[length] = 0;
+	return result;
 }
 
 xFORCE_INLINE

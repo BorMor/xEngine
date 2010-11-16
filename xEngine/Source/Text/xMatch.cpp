@@ -33,6 +33,16 @@ xMatchCollection::~xMatchCollection()
 		delete *it;
 }
 
+xMatchCollection::Iterator xMatchCollection::Begin() const
+{
+	return mMatches.Begin();
+}
+
+xMatchCollection::Iterator xMatchCollection::End() const
+{
+	return mMatches.End();
+}
+
 const xMatch& xMatchCollection::operator[](int index) const
 {
 	return *mMatches[index];
