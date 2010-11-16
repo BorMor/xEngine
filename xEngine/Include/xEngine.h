@@ -17,6 +17,8 @@ typedef float			xFloat;
 	#include <stdarg.h>
 #endif
 
+#include <utility>
+
 #include <stdio.h>
 #include <math.h>
 

@@ -15,12 +15,22 @@ xArray<TYPE>::xArray(size_t size)
 
 template<typename TYPE>
 xArray<TYPE>::xArray(const xArray& other)
+	: mBegin(0), mEnd(0), mAllocationEnd(0)
 {
 	if (other.Size() == 0)
 		return;
 	ReAlloc(other.Capacity(), true);
 	xCopyConstructN(mBegin, other.mBegin, other.Size());
-	mEnd = mBegin + other.Size();	
+	mEnd = mBegin + other.Size();
+}
+
+template<typename TYPE>
+xArray<TYPE>::xArray(xArray&& other)
+	: mBegin(0), mEnd(0), mAllocationEnd(0)
+{
+	std::swap(mBegin, other.mBegin);
+	std::swap(mEnd, other.mEnd);
+	std::swap(mAllocationEnd, other.mAllocationEnd);
 }
 
 template<typename TYPE>
@@ -78,7 +88,6 @@ void xArray<TYPE>::Clear()
 template<typename TYPE>
 void xArray<TYPE>::AddFront(const TYPE& item)
 {
-	//?
 	if (mBegin)
 		InsertBefore(mBegin, item);
 	else
@@ -167,6 +176,7 @@ void xArray<TYPE>::Resize(size_t n)
 	{
 		const size_t capacity = Capacity();
 		ReAlloc(capacity == 0 ? xARRAY_INITIAL_SIZE : (n > capacity * 2 ? n : capacity * 2));
+		xConstructN(mBegin + capacity, Capacity() - capacity);
 		mEnd = mBegin + n;
 	}
 	else

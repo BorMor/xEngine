@@ -19,7 +19,6 @@ protected:
 
 class xEXPORT xGroupCollection
 {
-	xHIDE_IMPLEMENTATION
 	friend class xRegex;
 public:
 	xGroupCollection();
@@ -27,6 +26,8 @@ public:
 
 	const xGroup& operator[](int index) const;
 	size_t Count() const;
+protected:
+	xArray<xGroup*>	mGroups;
 };
 
 class xEXPORT xMatch : public xGroup
@@ -45,7 +46,6 @@ protected:
 
 class xEXPORT xMatchCollection
 {
-	xHIDE_IMPLEMENTATION
 	friend class xRegex;
 public:
 	xMatchCollection();
@@ -54,6 +54,8 @@ public:
 
 	const xMatch& operator[](int index) const;
 	size_t Count() const;
+protected:
+	xArray<xMatch*>	mMatches;
 };
 
 

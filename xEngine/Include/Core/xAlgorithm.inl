@@ -124,7 +124,7 @@ void xConstruct(T* ptr)
 template<typename T>
 void xConstructN(T* first, size_t n)
 {
-	Internal::xConstructN(ptr, xIntToType<xHasTrivialConstructor<T>::Value>());
+	Internal::xConstructN(first, n, xIntToType<xHasTrivialConstructor<T>::Value>());
 }
 
 template <typename T>

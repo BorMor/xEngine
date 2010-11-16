@@ -1,5 +1,4 @@
 #include "xEngine.h"
-#include "xMatchImpl.h"
 
 xMatch::xMatch()
 	: mSuccess(false)
@@ -21,31 +20,25 @@ bool xMatch::Success() const
 
 xMatchCollection::xMatchCollection()
 {
-	pImpl = new Impl;
 }
 
 xMatchCollection::xMatchCollection(xMatchCollection&& other)
 {	
-	pImpl = other.pImpl;
-	other.pImpl = 0;
+	std::swap(mMatches, other.mMatches);
 }
 
 xMatchCollection::~xMatchCollection()
 {
-	if (pImpl)
-	{
-		for (auto it = pImpl->mMatches.begin(); it != pImpl->mMatches.end(); ++it)
-			delete *it;
-		xSAFE_DELETE(pImpl);
-	}
+	for (auto it = mMatches.Begin(); it != mMatches.End(); ++it)
+		delete *it;
 }
 
 const xMatch& xMatchCollection::operator[](int index) const
 {
-	return *(pImpl->mMatches[index]);
+	return *mMatches[index];
 }
 
 size_t xMatchCollection::Count() const
 {
-	return pImpl->mMatches.size();
+	return mMatches.Size();
 }

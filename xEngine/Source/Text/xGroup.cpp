@@ -1,5 +1,4 @@
 #include "xEngine.h"
-#include "xGroupImpl.h"
 
 xGroup::xGroup()
 	: mIndex(0), mLength(0)
@@ -28,22 +27,20 @@ xString xGroup::Value() const
 
 xGroupCollection::xGroupCollection()
 {
-	pImpl = new Impl;
 }
 
 xGroupCollection::~xGroupCollection()
 {
-	for (auto it = pImpl->mGroups.begin(); it != pImpl->mGroups.end(); ++it)
+	for (auto it = mGroups.Begin(); it != mGroups.End(); ++it)
 			delete *it;
-	xSAFE_DELETE(pImpl);
 }
 
 const xGroup& xGroupCollection::operator[](int index) const
 {
-	return *pImpl->mGroups[index];
+	return *mGroups[index];
 }
 
 size_t xGroupCollection::Count() const
 {
-	return pImpl->mGroups.size();
+	return mGroups.Size();
 }

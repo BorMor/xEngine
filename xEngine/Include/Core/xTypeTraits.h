@@ -55,7 +55,7 @@ struct xHasTrivialConstructor
 {
         enum
         {
-                Value = xIsFundamental<T>::Value || xIsPointer<T>::Value || xIsPod<T>::value
+                Value = xIsFundamental<T>::Value || xIsPointer<T>::Value || xIsPod<T>::Value
         };
 };
 

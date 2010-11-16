@@ -2,9 +2,6 @@
 #define PCRE_STATIC 1
 #include <pcre.h>
 
-#include "xGroupImpl.h"
-#include "xMatchImpl.h"
-
 #define OFFSET_COUNT 30
 
 struct xRegex::Impl
@@ -83,9 +80,9 @@ xMatchCollection xRegex::Matches(const xString& input)
 					group->mValue.Set(input.c_str() + offsets[2*i], offsets[2*i+1] - offsets[2*i]);
 
 					if (i > 0)
-						match->Groups.pImpl->mGroups.push_back(group);
+						match->Groups.mGroups.AddBack(group);
 				}
-				collection.pImpl->mMatches.push_back(match);
+				collection.mMatches.AddBack(match);
 				offset = offsets[1];
 			}
 			else
