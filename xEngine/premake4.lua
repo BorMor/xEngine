@@ -1,8 +1,8 @@
 project "xEngine"
   kind "SharedLib"
 
-  objdir "../Buildscrap/Obj/xEngine" 
- 
+  objdir "../Buildscrap/Obj/xEngine"
+
   targetdir "../Buildscrap/Bin"
 
   language "C++"
@@ -20,21 +20,24 @@ project "xEngine"
     links "GL"
   elseif os.is("windows") then
 	excludes { "**/Linux/**" }
-	defines { "xENGINE_EXPORTS" }	
-    links { "OpenGL32" } 
-    links { "Gdi32" } 
+	defines { "xENGINE_EXPORTS" }
+    links { "OpenGL32" }
+    links { "Gdi32" }
   end
- 
+
   configuration "Debug"
     targetsuffix "_d"
     implibsuffix "_d"
     defines { "DEBUG" }
     flags { "Symbols" }
-	
-	links { "pcre_d" } 
- 
+  if os.is("linux") then
+	links { "pcre" }
+  else
+    links { "pcre_d" }
+  end
+
   configuration "Release"
     defines { "NDEBUG" }
-    flags { "Optimize" } 
+    flags { "Optimize" }
 
-	links { "pcre" } 
+	links { "pcre" }
