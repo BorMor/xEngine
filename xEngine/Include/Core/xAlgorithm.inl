@@ -1,4 +1,4 @@
-#include <new.h>
+#include <new>
 
 namespace Internal
 {
@@ -42,11 +42,11 @@ namespace Internal
                 }
         }
 
-	}	
-	
+	}
+
 	template <typename T>
 	void xCopyN(T* dst, T* first, size_t n, xIntToType<true>)
-	{		
+	{
 		memcpy(dst, first, n * sizeof(T));
 	}
 
@@ -68,7 +68,7 @@ namespace Internal
 		for (size_t i = 0; i < n; ++i)
 			new (dst + i) T(first[i]);
 	}
-	
+
 	template <typename T>
 	void xCopyConstructN(T* dst, T* first, size_t n, xIntToType<true>)
 	{
@@ -90,7 +90,7 @@ namespace Internal
 
 	template<typename T>
 	void xDestruct(T* ptr, xIntToType<false>)
-	{		
+	{
 			ptr->~T();
 	}
 
