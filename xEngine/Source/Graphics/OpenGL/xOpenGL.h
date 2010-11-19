@@ -352,14 +352,6 @@ typedef struct __GLsync *GLsync;
 #define GL_TEXTURE_COMPARE_MODE	0x884C
 #define GL_TEXTURE_COMPARE_FUNC	0x884D
 
-#ifdef __cplusplus
-	extern "C" {
-#endif
-	extern void (*glXGetProcAddress(const GLubyte *procname))( void );
-#ifdef __cplusplus
-	}
-#endif
-
 // GL_VERSION_1_5
 #define GL_BUFFER_SIZE	0x8764
 #define GL_BUFFER_USAGE	0x8765

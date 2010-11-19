@@ -379,7 +379,20 @@ PFNGLWAITSYNCPROC glWaitSync = NULL;
 namespace xOpenGL
 {
 #if defined(xPLATFORM_WIN32)
-	HMODULE library;
+	static HMODULE library;
+#elif defined(xPLATFORM_LINUX)
+	#include <dlfcn.h>
+	static void *library;
+#endif
+
+#if defined(xPLATFORM_LINUX)
+	#ifdef __cplusplus
+		extern "C" {
+	#endif
+		extern void (*glXGetProcAddress(const GLubyte *procname))( void );
+	#ifdef __cplusplus
+		}
+	#endif
 #endif
 	
 	void* GetProc(const char* name)
@@ -389,7 +402,8 @@ namespace xOpenGL
 		if (!(result = (void*)wglGetProcAddress(name)))
 			result = (void*)GetProcAddress(library, name);
 #elif defined(xPLATFORM_LINUX)
-		result = (void*)glXGetProcAddress((GLubyte*)name);
+		if (!(result = (void*)glXGetProcAddress((GLubyte*)name)))
+			result = (void*)dlsym(library, name);
 #endif
 		return result;
 	}
@@ -398,6 +412,8 @@ namespace xOpenGL
 	{
 #if defined(xPLATFORM_WIN32)
 		library = LoadLibraryA("opengl32.dll");
+#elif defined(xPLATFORM_LINUX)
+		library = dlopen("libGL.so.1", RTLD_LAZY | RTLD_GLOBAL); 
 #endif
 		glActiveTexture = (PFNGLACTIVETEXTUREPROC) GetProc("glActiveTexture");
 		glAttachShader = (PFNGLATTACHSHADERPROC) GetProc("glAttachShader");
@@ -780,6 +796,8 @@ namespace xOpenGL
 	{
 #if defined(xPLATFORM_WIN32)
 		FreeLibrary(library); 
+#elif defined(xPLATFORM_LINUX)
+		dlclose(library); 
 #endif
 	}
 }

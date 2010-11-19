@@ -1,6 +1,6 @@
 #include "xEngine.h"
 #include "xShaderImpl.h"
-#include "../xShaderPreprocessor.h"
+#include "xShaderPreprocessor.h"
 
 xShader::xShader(xShaderType::Enum type)
 {
