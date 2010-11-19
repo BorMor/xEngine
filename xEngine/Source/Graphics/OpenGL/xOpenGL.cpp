@@ -389,7 +389,6 @@ namespace xOpenGL
 		if (!(result = (void*)wglGetProcAddress(name)))
 			result = (void*)GetProcAddress(library, name);
 #elif defined(xPLATFORM_LINUX)
-		#eror Not implemented yet
 		result = (void*)glXGetProcAddress((GLubyte*)name);
 #endif
 		return result;

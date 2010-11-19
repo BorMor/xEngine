@@ -3,10 +3,9 @@
 #include "xEngine.h"
 
 #if defined(xPLATFORM_WIN32)
-#include <windows.h>
+	#include <windows.h>
 #elif defined(xPLATFORM_LINUX)
-#include <GL/glx.h>
-#include <X11/X.h>
+	#include <X11/Xlib.h>
 #endif
 
 #include "xOpenGL.h"
