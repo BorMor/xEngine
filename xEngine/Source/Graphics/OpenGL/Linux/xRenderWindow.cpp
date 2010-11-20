@@ -41,7 +41,7 @@ void xRenderWindow::Show(){
 }
 
 void xRenderWindow::Hide(){
-
+	XUnmapWindow(pImpl->mpDisplay, pImpl->mWindow);
 }
 
 bool xRenderWindow::IsClosed() const {
