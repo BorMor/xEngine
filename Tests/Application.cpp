@@ -1,12 +1,19 @@
 #include "Application.h"
 
-xIMPLEMENT_APPLICATION(Application);
+xIMPLEMENT_CONSOLE_APPLICATION(Application);
 
 bool Application::OnInit()
 {
-	mConsole->SetTitle("xEngine Tests");
-	xTestRegistry::Instance().Run(this);
+	mConsole->SetTitle("xEngine Tests");	
 	return true;
+}
+
+void Application::Run()
+{
+	
+	xTestRegistry::Instance().Run(this);
+	mConsole->Print("\nPress Enter to continue...");
+	mConsole->Read();
 }
 
 void Application::OnShutdown()
@@ -35,23 +42,3 @@ void Application::AddFailure(const xString& condition, const xString& test_name,
 	mConsole->Print(xString::Format("File:      %s(%d)\n", filename.c_str(), line));
 	mLastTestSuccessful = false;
 }
-/*
-void Application::StartTests()
-{
-	TestResult::StartTests();
-	mFailedTestCount = 0;
-}
-
-void Application::EndTests()
-{
-	TestResult::EndTests();
-
-	static char buf[256];
-	if (m_failureCount != 0)
-	{
-		sprintf_s(buf, 256, "\nFailed %d of %d tests\n", mFailedTestCount, mTestCount);
-		mConsole->Print(buf, xColor::RED);
-	}
-	else
-		mConsole->Print("\nAll tests successful\n", xColor::GREEN);
-}*/

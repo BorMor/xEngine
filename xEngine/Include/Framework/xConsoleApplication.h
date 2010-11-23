@@ -7,7 +7,6 @@ public:
 	~xConsoleApplication();
 
 	bool Initialize();
-	void Run();
 	void Shutdown();
 protected:
 	xConsole* mConsole;

@@ -30,10 +30,32 @@ public:
 		delete XApplication;                                                \
 		return 0;                                                           \
 	}
+
+#define xIMPLEMENT_CONSOLE_APPLICATION(T)                                   \
+	int main(int argc, char **argv)                                         \
+	{                                                                       \
+		xApplication* XApplication = new T();                               \
+		if (XApplication->Initialize())										\
+			XApplication->Run();											\
+		XApplication->Shutdown();											\
+		delete XApplication;                                                \
+		return 0;                                                           \
+	}
 /***************************************************************************/
 #elif defined(xPLATFORM_LINUX)
 /***************************************************************************/
 #define xIMPLEMENT_APPLICATION(T)                                           \
+	int main(int argc, char **argv)                                         \
+	{                                                                       \
+		xApplication* XApplication = new T();                               \
+		if (XApplication->Initialize())										\
+			XApplication->Run();											\
+		XApplication->Shutdown();											\
+		delete XApplication;                                                \
+		return 0;                                                           \
+	}
+
+#define xIMPLEMENT_CONSOLE_APPLICATION(T)                                   \
 	int main(int argc, char **argv)                                         \
 	{                                                                       \
 		xApplication* XApplication = new T();                               \
