@@ -175,7 +175,7 @@ void xArray<TYPE>::Resize(size_t n)
 	if (n > Size())
 	{
 		const size_t capacity = Capacity();
-		ReAlloc(capacity == 0 ? xARRAY_INITIAL_SIZE : (n > capacity * 2 ? n : capacity * 2));
+		ReAlloc(capacity == 0 ? (n > xARRAY_INITIAL_SIZE ? n : xARRAY_INITIAL_SIZE) : (n > capacity * 2 ? n : capacity * 2));
 		xConstructN(mBegin + capacity, Capacity() - capacity);
 		mEnd = mBegin + n;
 	}
