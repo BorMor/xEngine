@@ -3,6 +3,7 @@
 class xRenderWindow
 {
 	xHIDE_IMPLEMENTATION
+	friend class xRenderContext;
 public:
 	xRenderWindow(xUInt32 width, xUInt32 height);
 	~xRenderWindow();

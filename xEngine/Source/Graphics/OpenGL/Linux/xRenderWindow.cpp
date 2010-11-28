@@ -1,13 +1,7 @@
 #include "xEngine.h"
 #include "../xPrerequisites.h"
+#include "xRenderWindowImpl.h"
 
-
-struct xRenderWindow::Impl{
-	Display* mpDisplay;
-	Window mWindow;
-	bool mClosed;
-	Atom mWmDeleteWindow;
-};
 
 xRenderWindow::xRenderWindow(xUInt32 width, xUInt32 height) : mWidth(width), mHeight(height){
 	pImpl = new Impl;
@@ -15,6 +9,7 @@ xRenderWindow::xRenderWindow(xUInt32 width, xUInt32 height) : mWidth(width), mHe
 	pImpl->mpDisplay = XOpenDisplay(NULL);
 	pImpl->mWindow = XCreateSimpleWindow(pImpl->mpDisplay, DefaultRootWindow(pImpl->mpDisplay),
 			0, 0, width, height, CopyFromParent, CopyFromParent, CopyFromParent);
+	XSelectInput(pImpl->mpDisplay, pImpl->mWindow, ExposureMask);
 
 	pImpl->mWmDeleteWindow = XInternAtom(pImpl->mpDisplay, "WM_DELETE_WINDOW", 1);
 	XSetWMProtocols(pImpl->mpDisplay, pImpl->mWindow, &pImpl->mWmDeleteWindow, 1);
