@@ -2,7 +2,7 @@
 
 #include "xPrerequisites.h"
 
-struct xShader::Impl
+struct xPixelShader::Impl
 {
 	GLuint	mName;
 };

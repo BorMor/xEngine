@@ -2,6 +2,9 @@
 #include "../xPrerequisites.h"
 #include "xRenderWindowImpl.h"
 
+extern "C" {
+	extern void glXSwapBuffers( Display *dpy, GLXDrawable drawable );
+}
 
 xRenderWindow::xRenderWindow(xUInt32 width, xUInt32 height) : mWidth(width), mHeight(height){
 	pImpl = new Impl;
@@ -45,4 +48,8 @@ bool xRenderWindow::IsClosed() const {
 
 xUInt32 xRenderWindow::Handle() const {
 	return (xUInt32)pImpl->mWindow;
+}
+
+void xRenderWindow::Present(){
+	glXSwapBuffers(pImpl->mpDisplay, pImpl->mWindow);
 }

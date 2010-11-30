@@ -55,7 +55,8 @@ typedef float			xFloat;
 
 #include "Text/xRegex.h"
 
-#include "Graphics/xShader.h"
+#include "Graphics/xPixelShader.h"
+#include "Graphics/xVertexShader.h"
 #include "Graphics/xMaterial.h"
 #include "Graphics/xVertexFormat.h"
 #include "Graphics/xIndexBuffer.h"

@@ -1,9 +1,9 @@
 #pragma once
 
-class xRenderWindow
+class xEXPORT xRenderWindow
 {
 	xHIDE_IMPLEMENTATION
-	friend class xRenderContext;
+	friend class xRenderDevice;
 public:
 	xRenderWindow(xUInt32 width, xUInt32 height);
 	~xRenderWindow();
@@ -13,6 +13,7 @@ public:
 	void ProcessMessages();
 	bool IsClosed() const;
 	xUInt32 Handle() const;
+	void Present();
 protected:
 	xUInt32 mWidth;
 	xUInt32 mHeight;

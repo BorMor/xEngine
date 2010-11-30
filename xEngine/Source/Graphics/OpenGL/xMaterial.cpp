@@ -1,36 +1,37 @@
 #include "xEngine.h"
 #include "xMaterialImpl.h"
-#include "xShaderImpl.h"
+#include "xVertexShaderImpl.h"
+#include "xPixelShaderImpl.h"
 
 xMaterial::xMaterial()
 {
 	pImpl = new Impl;
 
-	pImpl->mVertexShader = new xShader(xShaderType::Vertex);
-	pImpl->mFragmentShader = new xShader(xShaderType::Fragment);
-
-	pImpl->mProgram = glCreateProgram();
-	glAttachShader(pImpl->mProgram, pImpl->mVertexShader->pImpl->mName);	
-    glAttachShader(pImpl->mProgram, pImpl->mFragmentShader->pImpl->mName);
-	glLinkProgram(pImpl->mProgram);
+	pImpl->mProgram = glCreateProgram();   
 }
 
 xMaterial::~xMaterial()
-{
+{	
 	glDeleteProgram(pImpl->mProgram);
-	glDeleteShader(pImpl->mFragmentShader);
-	glDeleteShader(pImpl->mVertexShader);
+	if (pImpl->mFragmentShader)
+		glDeleteShader(pImpl->mFragmentShader);
+	if (pImpl->mVertexShader)
+		glDeleteShader(pImpl->mVertexShader);
 	xSAFE_DELETE(pImpl);
 }
 
 void xMaterial::SetVertexShader(const xString& path)
 {
-	pImpl->mVertexShader->LoadFromFile(path);
+	pImpl->mVertexShader = xVertexShader::LoadFromFile(path);
+	glAttachShader(pImpl->mProgram, pImpl->mVertexShader->pImpl->mName);	
+	
 	glLinkProgram(pImpl->mProgram);
 }
 
 void xMaterial::SetFragmentShader(const xString& path)
 {
-	pImpl->mFragmentShader->LoadFromFile(path);
+	pImpl->mFragmentShader = xPixelShader::LoadFromFile(path);
+	glAttachShader(pImpl->mProgram, pImpl->mFragmentShader->pImpl->mName);
+
 	glLinkProgram(pImpl->mProgram);
 }

@@ -8,8 +8,8 @@ public:
 	xMaterial();
 	~xMaterial();
 
-	void SetVertexShader(const xString& path);
-	void SetFragmentShader(const xString& path);
+	void SetVertexShader(const xString& source);
+	void SetFragmentShader(const xString& source);
 };
 
 typedef xSharedPtr<xMaterial> xMaterialPtr;

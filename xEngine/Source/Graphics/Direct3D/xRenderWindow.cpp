@@ -39,12 +39,19 @@ xRenderWindow::xRenderWindow(xUInt32 width, xUInt32 height)
 							WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, width, height,
 							NULL, NULL, pImpl->mWindowClass.hInstance, NULL);    
 
-	pImpl->mDeviceContext = GetDC(pImpl->mHandle);
+	pImpl->mSwapChain = 0;
+	if (gDevice)
+		pImpl->Init();	
 }
 
 xRenderWindow::~xRenderWindow()
 {
-	ReleaseDC(pImpl->mHandle, pImpl->mDeviceContext);
+	if (pImpl->mRenderTargetView)
+		pImpl->mRenderTargetView->Release();
+
+    if (pImpl->mSwapChain)
+		pImpl->mSwapChain->Release();
+
 	UnregisterClass("xWindow", pImpl->mWindowClass.hInstance);
 	xSAFE_DELETE(pImpl);
 }
@@ -86,5 +93,6 @@ xUInt32 xRenderWindow::Handle() const
 
 void xRenderWindow::Present()
 {
-	::SwapBuffers(pImpl->mDeviceContext);
+	if (pImpl->mSwapChain)
+		pImpl->mSwapChain->Present(0, 0);
 }

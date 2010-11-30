@@ -6,7 +6,6 @@
 	#include <windows.h>
 #elif defined(xPLATFORM_LINUX)
 	#include <X11/Xlib.h>
-	#include <X11/Xutil.h>
 #endif
 
 #include "xOpenGL.h"

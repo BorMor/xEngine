@@ -3,7 +3,7 @@
 #include "xVertexBufferImpl.h"
 #include "xVertexFormatImpl.h"
 
-xVertexBuffer::xVertexBuffer(xVertexFormat* vertex_format, size_t vertex_count, size_t stride)
+xVertexBuffer::xVertexBuffer(xSharedPtr<xVertexFormat> vertex_format, size_t vertex_count, size_t stride)
 	: mStride(stride), mVertexCount(vertex_count)
 {
 	pImpl = new Impl;
@@ -68,21 +68,6 @@ xVertexBuffer::~xVertexBuffer()
 	glDeleteBuffers(1, &pImpl->mVAO);
 	glDeleteBuffers(1, &pImpl->mVBO);
 	xSAFE_DELETE(pImpl);
-}
-
-size_t xVertexBuffer::Stride() const
-{
-	return mStride;
-}
-
-size_t xVertexBuffer::VertexCount() const
-{
-	return mVertexCount;
-}
-
-size_t xVertexBuffer::SizeInBytes() const
-{
-    return mStride * mVertexCount;
 }
 
 void* xVertexBuffer::Lock()

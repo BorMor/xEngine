@@ -25,6 +25,14 @@ struct xVertexElementUsage
 
 class xEXPORT xVertexFormat
 {
+	struct Element
+	{
+		size_t						Offset;
+		xVertexElementType::Enum	Type;
+		xVertexElementUsage::Enum	Usage;
+	};
+	typedef xArray<Element> ElementList;
+
 	xHIDE_IMPLEMENTATION
 	friend class xRenderDevice;
 	friend class xVertexBuffer;
@@ -36,5 +44,6 @@ public:
 	void AddElement(xVertexElementType::Enum type, xVertexElementUsage::Enum usage);
 	size_t VertexSize() const;
 protected:
-	size_t		mSize;
+	ElementList		mElements;
+	size_t			mSize;
 };

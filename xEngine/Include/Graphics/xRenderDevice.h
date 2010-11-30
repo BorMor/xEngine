@@ -26,4 +26,6 @@ public:
 	void DrawPrimitive(xPrimitiveType::Enum type, xUInt32 start_vertex, xUInt32 vertex_count);
 	//void DrawIndexedPrimitive(xPrimitiveType::Enum type, xUInt32 base_vertex, xUInt32 min_index, xUInt32 vertex_count, xUInt32 start_index, xUInt32 primitive_count);
 	void Present();
+
+	void SetUniform(const xString& name, const xMatrix& value);
 };

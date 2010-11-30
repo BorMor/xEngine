@@ -4,7 +4,7 @@
 
 struct xMaterial::Impl
 {
-	xShaderPtr	mVertexShader;	
-	xShaderPtr	mFragmentShader;	
+	xSharedPtr<xVertexShader>	mVertexShader;	
+	xSharedPtr<xPixelShader>	mFragmentShader;	
 	GLuint		mProgram;	
 };
