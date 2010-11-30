@@ -17,20 +17,20 @@ xFileStream::~xFileStream(){
 }
 
 void xFileStream::Open(){
-	char mode;
+	xString mode;
 	switch (mAccessMode){
 		case xAccessMode::Read:
-			mode = 'r';
+			mode = "r";
 			break;
 		case xAccessMode::Write:
-			mode = 'w';
+			mode = "w";
 			break;
 		case xAccessMode::ReadWrite:
-			mode = 'a';
+			mode = "a+";
 			break;
 	}
 
-	pImpl->mHandle = fopen(mFileName.c_str(), &mode);
+	pImpl->mHandle = fopen(mFileName.c_str(), mode.c_str());
 	if (pImpl->mHandle != NULL) mIsOpen = true;
 }
 
