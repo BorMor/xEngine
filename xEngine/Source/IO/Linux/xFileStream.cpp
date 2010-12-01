@@ -32,6 +32,7 @@ void xFileStream::Open(){
 
 	pImpl->mHandle = fopen(mFileName.c_str(), mode.c_str());
 	if (pImpl->mHandle != NULL) mIsOpen = true;
+	else throw;
 }
 
 void xFileStream::Close(){
@@ -39,6 +40,7 @@ void xFileStream::Close(){
 }
 
 void xFileStream::Seek(size_t offset, xSeekOrigin::Enum origin){
+	if (!mIsOpen) throw;
 	xInt32 whence;
 	switch (origin){
 		case xSeekOrigin::Begin:
@@ -55,15 +57,21 @@ void xFileStream::Seek(size_t offset, xSeekOrigin::Enum origin){
 }
 
 size_t xFileStream::Read(void* buffer, size_t count){
+	if (!mIsOpen) throw;
 	return fread(buffer, 1, count, pImpl->mHandle);
 }
 
 size_t xFileStream::Write(void* buffer, size_t count){
+	if (!mIsOpen) throw;
 	return fwrite(buffer, 1, count, pImpl->mHandle);
 }
 
-// TODO: Реализовать нормально
 size_t xFileStream::Size() const
 {
-	return 0;
+	if (!mIsOpen) throw;
+	size_t cur = ftell(pImpl->mHandle);
+	fseek(pImpl->mHandle, 0, SEEK_END);
+	size_t end = ftell(pImpl->mHandle);
+	fseek(pImpl->mHandle, cur, SEEK_SET);
+	return end;
 }

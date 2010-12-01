@@ -1,9 +1,8 @@
 #include "xEngine.h"
-#include "../xPrerequisites.h"
 #include "xRenderWindowImpl.h"
 
 extern "C" {
-	extern void glXSwapBuffers( Display *dpy, GLXDrawable drawable );
+	extern void glXSwapBuffers( Display *dpy, XID drawable );
 }
 
 xRenderWindow::xRenderWindow(xUInt32 width, xUInt32 height) : mWidth(width), mHeight(height){
