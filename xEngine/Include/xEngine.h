@@ -25,6 +25,9 @@ typedef float			xFloat;
 #include "Core/xUtil.h"
 #include "Core/xTypeTraits.h"
 #include "Core/xString.h"
+
+#include "Core/xException.h"
+
 #include "Core/xSharedPtr.h"
 
 #include "Core/xAlgorithm.h"
