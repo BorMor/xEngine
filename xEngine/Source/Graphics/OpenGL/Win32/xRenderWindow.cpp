@@ -36,7 +36,8 @@ xRenderWindow::xRenderWindow(xUInt32 width, xUInt32 height)
     RegisterClassEx(&pImpl->mWindowClass);
 
     pImpl->mHandle = CreateWindow("xWindow", "xEngine",
-							WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, width, height,
+							WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT,
+							width + GetSystemMetrics(SM_CXFIXEDFRAME)*2, height + GetSystemMetrics(SM_CXFIXEDFRAME)*2 + GetSystemMetrics(SM_CYCAPTION),
 							NULL, NULL, pImpl->mWindowClass.hInstance, NULL);    
 
 	pImpl->mDeviceContext = GetDC(pImpl->mHandle);
