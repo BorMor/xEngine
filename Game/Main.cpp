@@ -10,6 +10,7 @@ public:
 		reader.ReadUInt32();	// 'MESH'		
 
 		mVertexBuffer = xVertexBuffer::LoadFromStream(stream);
+		delete stream;
 		
 		mMaterial = new xMaterial();
 		///*

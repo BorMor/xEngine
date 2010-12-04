@@ -105,6 +105,7 @@ void xRenderDevice::SetVertexBuffer(xVertexBuffer* buffer)
 
 			ID3D10Blob* blob = pImpl->mMaterial->pImpl->mVertexShader->pImpl->mCompiledShader;
 			HRESULT hr = gDevice->CreateInputLayout(descs, n_elements, blob->GetBufferPointer(), blob->GetBufferSize(), &vertex_format->pImpl->mLayout);
+			delete[] descs;
 		}
 		
 		gDevice->IASetInputLayout(vertex_format->pImpl->mLayout);
