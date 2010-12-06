@@ -35,6 +35,7 @@ typedef float			xFloat;
 #include "Core/Containers/xKeyValuePair.h"
 #include "Core/Containers/xHashTable.h"
 #include "Core/Containers/xList.h"
+#include "Core/Containers/xRedBlackTree.h"
 
 #include "Math/xColor.h"
 #include "Math/xVector2.h"
