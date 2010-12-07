@@ -17,8 +17,9 @@ namespace Internal
 	
 	template <typename TRAITS>
 	class xRedBlackTreeBase
-	{		
-		class Node;
+	{
+	protected:
+		struct Node;
 	public:	
 		typedef typename TRAITS::ValueType	TYPE;
 		typedef typename TRAITS::KeyType	KEYTYPE;

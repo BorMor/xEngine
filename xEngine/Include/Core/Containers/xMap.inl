@@ -29,7 +29,7 @@ void xMap<KEYTYPE, VALUETYPE>::Remove(const Iterator& iterator)
 template <typename KEYTYPE, typename VALUETYPE>
 void xMap<KEYTYPE, VALUETYPE>::Remove(const KEYTYPE& key)
 {
-	TreeType::Iterator it = mTree.Find(key);
+	typename TreeType::Iterator it = mTree.Find(key);
 	if (it != mTree.End())
 		Remove(it);
 }
@@ -75,7 +75,7 @@ VALUETYPE& xMap<KEYTYPE, VALUETYPE>::operator[](const KEYTYPE& key) const
 {
 	static VALUETYPE dummy;
 
-	TreeType::Iterator it = mTree.Find(key);
+	typename TreeType::Iterator it = mTree.Find(key);
 	if (it != mTree.End())
 		return it->Value();
 	else	
