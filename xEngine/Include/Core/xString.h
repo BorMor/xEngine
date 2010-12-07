@@ -37,6 +37,8 @@ public:
 	friend xString operator +(const xString& a, const xString& b);
 	friend bool operator ==(const xString& a, const xString& b);
 	friend bool operator !=(const xString& a, const xString& b);
+	friend bool operator <(const xString& a, const xString& b);
+	friend bool operator >(const xString& a, const xString& b);
 
 	size_t Length() const;
 

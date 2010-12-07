@@ -8,6 +8,7 @@ public:
 
 	xArray();
 	explicit xArray(size_t size);	
+	xArray(const xArray& other);
 	xArray(xArray&& other);
 	~xArray();
 
@@ -36,9 +37,7 @@ protected:
 
 	void Grow();
 	void Shrink(size_t new_size);
-	void ReAlloc(size_t capacity, bool discard_old = false);	
-private:
-	xArray(const xArray& other);
+	void ReAlloc(size_t capacity, bool discard_old = false);		
 };
 
 #include "xArray.inl"

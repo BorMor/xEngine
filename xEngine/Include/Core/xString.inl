@@ -207,6 +207,18 @@ bool operator !=( const xString& a, const xString& b)
 }
 
 xFORCE_INLINE
+bool operator <(const xString& a, const xString& b)
+{
+	return strcmp(a.mData, b.mData) < 0;
+}
+
+xFORCE_INLINE
+bool operator >(const xString& a, const xString& b)
+{
+	return strcmp(a.mData, b.mData) > 0;
+}
+
+xFORCE_INLINE
 xUInt32 xHash(const xString& str)
 {
 	xUInt32 hash = 0;

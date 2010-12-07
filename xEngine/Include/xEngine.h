@@ -9,6 +9,7 @@ typedef int				xInt32;
 typedef unsigned short	xUInt16;
 typedef short			xInt16;
 typedef float			xFloat;
+typedef double			xDouble;
 
 #if defined(xPLATFORM_WIN32)
 	#include <windows.h>
@@ -26,16 +27,14 @@ typedef float			xFloat;
 #include "Core/xTypeTraits.h"
 #include "Core/xString.h"
 
-#include "Core/xException.h"
-
 #include "Core/xSharedPtr.h"
 
 #include "Core/xAlgorithm.h"
 #include "Core/Containers/xArray.h"
 #include "Core/Containers/xKeyValuePair.h"
-#include "Core/Containers/xHashTable.h"
 #include "Core/Containers/xList.h"
 #include "Core/Containers/xRedBlackTree.h"
+#include "Core/Containers/xMap.h"
 
 #include "Math/xColor.h"
 #include "Math/xVector2.h"

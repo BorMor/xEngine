@@ -30,6 +30,7 @@ public:
 	};
 
 	xList();
+	//@todo copy constructor
 	~xList();
 
 	size_t Size() const;
