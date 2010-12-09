@@ -72,14 +72,14 @@ typename xMap<KEYTYPE, VALUETYPE>::Iterator xMap<KEYTYPE, VALUETYPE>::Find(const
 
 template <typename KEYTYPE, typename VALUETYPE>
 VALUETYPE& xMap<KEYTYPE, VALUETYPE>::operator[](const KEYTYPE& key) const
-{
+{	
 	static VALUETYPE dummy;
 
 	typename TreeType::Iterator it = mTree.Find(key);
 	if (it != mTree.End())
 		return it->Value();
 	else	
-		return dummy;
+		return dummy;//@todo: insert new key/value
 }
 
 template <typename KEYTYPE, typename VALUETYPE>

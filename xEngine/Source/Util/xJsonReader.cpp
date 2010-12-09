@@ -202,7 +202,6 @@ bool xJsonReader::ReadNumber(xJsonValue& value)
 	while (*end && ((*end >= '0' && *end <= '9') || *end == 'e' || *end == 'E' || *end == '-' || *end == '+' || *end == '.'))
 		end++;
 
-
 	bool valid = true;
 
 	bool negative = false;

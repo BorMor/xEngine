@@ -247,14 +247,23 @@ const xJsonValue& xJsonValue::operator [](size_t index) const
 xJsonValue& xJsonValue::operator [](const char* name)
 {
 	if (mType == xJsonType::Object)
-		return *(*mValue.AsObject)[name];
+	{
+		ObjectValues::Iterator it = mValue.AsObject->Find(name);
+		if (it != mValue.AsObject->End())
+			return *it->Value();
+	}
 	return Null;
 }
 
 const xJsonValue& xJsonValue::operator [](const char* name) const
 {
 	if (mType == xJsonType::Object)
-		return *(*mValue.AsObject)[name];
+	{
+		ObjectValues::Iterator it = mValue.AsObject->Find(name);
+		if (it != mValue.AsObject->End())
+			return *it->Value();
+	}
+
 	return Null;
 }
 
