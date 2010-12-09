@@ -1,6 +1,10 @@
 #pragma once
 
-const size_t xSTRING_ALLOC_BASE = 20;
+#ifdef x64
+	const size_t xSTRING_ALLOC_BASE = 40;
+#else
+	const size_t xSTRING_ALLOC_BASE = 20;
+#endif
 const size_t xSTRING_ALLOC_GRAN = 32;
 
 class xEXPORT xString

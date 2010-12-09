@@ -62,3 +62,7 @@
 #else
 #	define xEXPORT
 #endif
+
+#if defined(__LP64__) || defined(WIN64)
+#	define x64
+#endif

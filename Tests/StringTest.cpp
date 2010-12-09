@@ -5,7 +5,11 @@ xTEST(String)
 	{
 		xString str;
 		xCHECK(str.Length() == 0);
+#ifdef x64
+		xCHECK(sizeof(xString) == 64);
+#else
 		xCHECK(sizeof(xString) == 32);
+#endif
 		str = "abc";
 		xCHECK(str.Length() == 3);
 		xCHECK(strcmp(str.c_str(), "abc") == 0);
