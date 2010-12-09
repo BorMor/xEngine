@@ -217,14 +217,3 @@ bool operator >(const xString& a, const xString& b)
 {
 	return strcmp(a.mData, b.mData) > 0;
 }
-
-xFORCE_INLINE
-xUInt32 xHash(const xString& str)
-{
-	xUInt32 hash = 0;
-	const xChar* c = str.c_str();
-	for (size_t i = 0; *c != '\0'; i++)
-		hash += (*c++) * ((xUInt32)i + 119);
-
-	return hash;
-}
