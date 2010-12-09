@@ -61,6 +61,4 @@ protected:
 	void EnsureAllocated(size_t nbytes, bool keep_old);
 };
 
-xUInt32 xHash(const xString& str);
-
 #include "xString.inl"
