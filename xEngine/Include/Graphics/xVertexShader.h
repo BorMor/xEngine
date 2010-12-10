@@ -3,7 +3,7 @@
 class xEXPORT xVertexShader
 {
 	xHIDE_IMPLEMENTATION
-	friend class xMaterial;	
+	friend class xGPUProgram;	
 	friend class xRenderDevice;	
 public:
 	xVertexShader(const xString& source);

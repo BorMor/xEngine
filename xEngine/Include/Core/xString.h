@@ -12,7 +12,9 @@ class xEXPORT xString
 public:
 	xString();
 	xString(const xString& other);
+#if defined(xCPP0X_ENABLED)
 	xString(xString&& other);
+#endif
 	xString(const xChar* text);
 	xString(const xChar* text, size_t length);
 	~xString();

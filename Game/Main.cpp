@@ -12,22 +12,19 @@ public:
 		mVertexBuffer = xVertexBuffer::LoadFromStream(stream);
 		delete stream;
 		
-		mMaterial = new xMaterial();
-		///*
-		//OpenGL
-		mMaterial->SetVertexShader("Data/Shaders/basic.vert");//vertex_shader);
-		mMaterial->SetFragmentShader("Data/Shaders/basic.frag");//pixel_shader);//*/
-		/*
-		//Direct3D
-		mMaterial->SetVertexShader("Data/Shaders/basicVS.hlsl");//vertex_shader);
-		mMaterial->SetFragmentShader("Data/Shaders/basicPS.hlsl");//*/
+		//xFile::Open("sdf");
+#ifdef xRENDERSYSTEM_OPENGL
+		mProgram = new xGPUProgram("Data/Shaders/basic.vert", "Data/Shaders/basic.frag");
+#else		
+		mProgram = new xGPUProgram("Data/Shaders/basicVS.hlsl", "Data/Shaders/basicPS.hlsl");
+#endif
 		return true;
 	}
 
 	void OnUpdate(float dt)
 	{
 		mRenderDevice->Clear(xColor::BLACK);		
-		mRenderDevice->SetMaterial(mMaterial);
+		mRenderDevice->SetProgram(mProgram);
 		mRenderDevice->SetVertexBuffer(mVertexBuffer);
 		mRenderDevice->DrawPrimitive(xPrimitiveType::PointList, 0, mVertexBuffer->VertexCount());
 		mRenderWindow->Present();
@@ -35,11 +32,11 @@ public:
 	
 	void OnShutdown()
 	{
-		xSAFE_DELETE(mMaterial);
+		xSAFE_DELETE(mProgram);
 		xSAFE_DELETE(mVertexBuffer);
 	}
 protected:
-	xMaterial*		mMaterial;
+	xGPUProgram*	mProgram;
 	xVertexBuffer*	mVertexBuffer;
 };
 

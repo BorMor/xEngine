@@ -40,7 +40,6 @@ class xEXPORT xMatch : public xGroup
 	friend class xRegex;
 public:
 	xMatch();
-	xMatch(xMatch&& other);
 
 	bool Success() const;
 
@@ -56,7 +55,6 @@ public:
 	typedef xArray<xMatch*>::Iterator Iterator;
 
 	xMatchCollection();
-	xMatchCollection(xMatchCollection&& other);
 	~xMatchCollection();
 
 	Iterator Begin() const;
@@ -89,12 +87,12 @@ public:
 	~xRegex();
 
 	bool IsMatch(const xString& input);
-	xMatch Match(const xString& input);
-	xMatchCollection Matches(const xString& input);
+	bool Match(const xString& input, xMatch& match);
+	bool Matches(const xString& input, xMatchCollection& matches);
 	xString Replace(const xString& input, const xString replacement);
 
 	static bool IsMatch(const xString& input, const xString& pattern, xRegexOptions::Flags options = xRegexOptions::None);
-	static xMatch Match(const xString& input, const xString& pattern, xRegexOptions::Flags options = xRegexOptions::None);
-	static xMatchCollection Matches(const xString& input, const xString& pattern, xRegexOptions::Flags options = xRegexOptions::None);
+	static bool Match(const xString& input, const xString& pattern, xMatch& match, xRegexOptions::Flags options = xRegexOptions::None);
+	static bool Matches(const xString& input, const xString& pattern, xMatchCollection& matches, xRegexOptions::Flags options = xRegexOptions::None);
 	static xString Replace(const xString& input, const xString& pattern, const xString replacement, xRegexOptions::Flags options = xRegexOptions::None);
 };

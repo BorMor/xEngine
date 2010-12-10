@@ -43,28 +43,59 @@ bool xRegex::IsMatch(const xString& input)
 	return false;
 }
 
-xMatch xRegex::Match(const xString& input)
+bool xRegex::Match(const xString& input, xMatch& match)
 {
-	xMatch match;
-	return match;
+	bool result = false;
+	if (pImpl->mCompiledPattern)
+	{	
+		int offsets[OFFSET_COUNT];
+			
+		int rc = pcre_exec(pImpl->mCompiledPattern, 0, input.c_str(), 0, input.Length(), 0, offsets, OFFSET_COUNT);          
+		if (rc > 0)
+		{
+			if (!result)
+				match.Groups.mGroups.Clear();
+			result = true;
+			match.mSuccess = true;
+			for (int i = 0; i < rc; i++)
+			{
+				xGroup* group;
+				if (i == 0)
+					group = &match;
+				else
+					group = new xGroup();
+						
+				group->mIndex = offsets[2*i];
+				group->mLength = offsets[2*i+1] - offsets[2*i];
+				group->mValue.Set(input.c_str() + offsets[2*i], offsets[2*i+1] - offsets[2*i]);
+
+				if (i > 0)
+					match.Groups.mGroups.AddBack(group);
+			}
+		}
+	}
+	
+	return result;
 }
 
-xMatchCollection xRegex::Matches(const xString& input)
+bool xRegex::Matches(const xString& input, xMatchCollection& matches)
 {
-	xMatchCollection collection;
-	
+	bool result = false;
 	if (pImpl->mCompiledPattern)
 	{	
 		int offsets[OFFSET_COUNT];
 
 		unsigned int offset = 0;
 		unsigned int len = input.Length();
-	
+			
 		while (offset < len)
 		{
 			int rc = pcre_exec(pImpl->mCompiledPattern, 0, input.c_str(), len, offset, 0, offsets, OFFSET_COUNT);          
 			if (rc > 0)
 			{
+				if (!result)
+					matches.mMatches.Clear();
+				result = true;
 				xMatch* match = new xMatch();
 				match->mSuccess = true;
 				for (int i = 0; i < rc; i++)
@@ -82,7 +113,7 @@ xMatchCollection xRegex::Matches(const xString& input)
 					if (i > 0)
 						match->Groups.mGroups.AddBack(group);
 				}
-				collection.mMatches.AddBack(match);
+				matches.mMatches.AddBack(match);
 				offset = offsets[1];
 			}
 			else
@@ -91,7 +122,7 @@ xMatchCollection xRegex::Matches(const xString& input)
 		}
 	}
 	
-	return collection;
+	return result;
 }
 
 xString xRegex::Replace(const xString& input, const xString replacement)
@@ -129,14 +160,14 @@ bool xRegex::IsMatch(const xString& input, const xString& pattern, xRegexOptions
 	return xRegex(pattern, options).IsMatch(input);
 }
 
-xMatch Match(const xString& input, const xString& pattern, xRegexOptions::Flags options)
+bool Match(const xString& input, const xString& pattern, xMatch& match, xRegexOptions::Flags options)
 {
-	return xRegex(pattern, options).Match(input);
+	return xRegex(pattern, options).Match(input, match);
 }
 
-xMatchCollection xRegex::Matches(const xString& input, const xString& pattern, xRegexOptions::Flags options)
+bool xRegex::Matches(const xString& input, const xString& pattern, xMatchCollection& matches, xRegexOptions::Flags options)
 {	
-	return xRegex(pattern, options).Matches(input);
+	return xRegex(pattern, options).Matches(input, matches);
 }
 
 xString xRegex::Replace(const xString& input, const xString& pattern, const xString replacement, xRegexOptions::Flags options)

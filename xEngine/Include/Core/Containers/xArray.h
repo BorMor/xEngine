@@ -8,8 +8,10 @@ public:
 
 	xArray();
 	explicit xArray(size_t size);	
-	xArray(const xArray& other);
+public:
+#if defined(xCPP0X_ENABLED)
 	xArray(xArray&& other);
+#endif
 	~xArray();
 
 	TYPE& operator[] (size_t i);
@@ -38,6 +40,8 @@ protected:
 	void Grow();
 	void Shrink(size_t new_size);
 	void ReAlloc(size_t capacity, bool discard_old = false);		
+private:
+	xArray(const xArray& other);
 };
 
 #include "xArray.inl"

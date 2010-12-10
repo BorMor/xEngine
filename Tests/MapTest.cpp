@@ -18,15 +18,8 @@ xTEST(Map)
 	for (xTestMap::Iterator it = map.Begin(); it != map.End(); ++it)
 		sum += it->Value();
 	xCHECK(sum == (123 + 256 + 8))
-	
-	xTestMap map2(map);
 
 	xCHECK(map.Contains("abc") == true)
 	map.Remove("abc");
 	xCHECK(map.Contains("abc") == false)
-
-	sum = 0;
-	for (xTestMap::Iterator it = map2.Begin(); it != map2.End(); ++it)
-		sum += it->Value();
-	xCHECK(sum == (123 + 256 + 8))
 }

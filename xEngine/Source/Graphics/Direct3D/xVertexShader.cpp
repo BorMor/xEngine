@@ -25,32 +25,3 @@ xVertexShader* xVertexShader::LoadFromFile(const xString& path)
 	xString source = xFile::ReadToString(path);
 	return new xVertexShader(source);
 }
-
-//void xVertexShader::LoadFromFile(const xString& path)
-//{
-	/*xString source = xShaderPreprocessor::LoadContents(path);
-	// Load and compile
-	const char* ptr = source.c_str();
-	glShaderSource(pImpl->mName, 1, (const char**)&ptr, 0);
-	glCompileShader(pImpl->mName);*/
-/*
-	GLint compiled;
-	glGetShaderiv(pImpl->mName, GL_COMPILE_STATUS, &compiled);
-	if (!compiled)
-	{
-		GLint logLength, charsWritten;
-		char* log;
-		
-		glGetShaderiv(pImpl->mName, GL_INFO_LOG_LENGTH, &logLength);
-
-
-		log = (char*)malloc(logLength);
-
-        glGetShaderInfoLog(pImpl->mName, logLength, &charsWritten, log);
-
-		printf("Shader compile error:\n");
-		printf("%s\n", log);
-
-		free(log);
-	}*/
-//}

@@ -47,7 +47,6 @@ namespace Internal
 		};
 
 		xRedBlackTreeBase();
-		xRedBlackTreeBase(const xRedBlackTreeBase& other);
 		virtual ~xRedBlackTreeBase();
 
 		Iterator Insert(const TYPE& value);
@@ -92,6 +91,8 @@ namespace Internal
 		void RotateLeft(Node* node);
 		void RotateRight(Node* node);
 		void DeleteNode(Node* node, bool recursive);
+	private:
+		xRedBlackTreeBase(const xRedBlackTreeBase& other);
 	};
 }
 

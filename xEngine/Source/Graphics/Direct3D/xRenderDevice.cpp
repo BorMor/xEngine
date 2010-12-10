@@ -1,6 +1,6 @@
 #include "xEngine.h"
 #include "xPrerequisites.h"
-#include "xMaterialImpl.h"
+#include "xGPUProgramImpl.h"
 #include "xRenderWindowImpl.h"
 #include "xVertexBufferImpl.h"
 #include "xVertexFormatImpl.h"
@@ -11,7 +11,7 @@ ID3D10Device*	gDevice = 0;
 
 struct xRenderDevice::Impl
 {
-	xMaterial*				mMaterial;	
+	xGPUProgram*	mProgram;
 };	
 
 xRenderDevice::xRenderDevice(xRenderWindow* window)
@@ -25,8 +25,9 @@ xRenderDevice::xRenderDevice(xRenderWindow* window)
     UINT height = rc.bottom - rc.top;
 
 	D3D10CreateDevice(NULL, D3D10_DRIVER_TYPE_HARDWARE, NULL, 0, D3D10_SDK_VERSION, &gDevice);		
-	window->pImpl->Init();
-	pImpl->mMaterial = 0;	
+	window->pImpl->Init();	
+
+	pImpl->mProgram = NULL;
 }
 
 xRenderDevice::~xRenderDevice()
@@ -52,16 +53,6 @@ void xRenderDevice::Clear(const xColor& color)
 	gDevice->ClearRenderTargetView(target, fcolor);
 }
 
-void xRenderDevice::SetMaterial(xMaterial* material)
-{
-	
-	pImpl->mMaterial = material;
-	if (pImpl->mMaterial)
-	{
-		gDevice->VSSetShader(pImpl->mMaterial->pImpl->mVertexShader->pImpl->mShader);
-		gDevice->PSSetShader(pImpl->mMaterial->pImpl->mPixelShader->pImpl->mShader);
-	}
-}
 
 // d3d10 mapping for xVertexElementUsage
 static char* semantic_names[] =
@@ -71,6 +62,16 @@ static char* semantic_names[] =
 	"COLOR",	// xVertexElementUsage::Diffuse
 	"TEXCOORD",	// xVertexElementUsage::TexCoord
 };
+
+void xRenderDevice::SetProgram(xGPUProgram* program)
+{
+	pImpl->mProgram = program;
+	if (pImpl->mProgram)
+	{
+		gDevice->VSSetShader(pImpl->mProgram->pImpl->mVertexShader->pImpl->mShader);
+		gDevice->PSSetShader(pImpl->mProgram->pImpl->mPixelShader->pImpl->mShader);
+	}
+}
 
 // d3d10 mapping for xVertexElementType
 static DXGI_FORMAT element_formats[] = 
@@ -103,7 +104,7 @@ void xRenderDevice::SetVertexBuffer(xVertexBuffer* buffer)
 				descs[i].InstanceDataStepRate = 0;
 			};
 
-			ID3D10Blob* blob = pImpl->mMaterial->pImpl->mVertexShader->pImpl->mCompiledShader;
+			ID3D10Blob* blob = pImpl->mProgram->pImpl->mVertexShader->pImpl->mCompiledShader;
 			HRESULT hr = gDevice->CreateInputLayout(descs, n_elements, blob->GetBufferPointer(), blob->GetBufferSize(), &vertex_format->pImpl->mLayout);
 			delete[] descs;
 		}

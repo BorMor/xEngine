@@ -2,10 +2,8 @@
 
 #include "xPrerequisites.h"
 
-struct xMaterial::Impl
+struct xGPUProgram::Impl
 {
 	xSharedPtr<xVertexShader>	mVertexShader;
 	xSharedPtr<xPixelShader>	mPixelShader;
-	//xShaderPtr	mFragmentShader;	
-//	GLuint		mProgram;	
 };

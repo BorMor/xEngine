@@ -5,14 +5,6 @@ xMatch::xMatch()
 {
 }
 
-xMatch::xMatch(xMatch&& other)
-{
-	mSuccess = other.mSuccess;
-	mIndex = other.mIndex;
-	mLength = other.mLength;
-	mValue = other.mValue;
-}
-
 bool xMatch::Success() const
 {
 	return mSuccess;
@@ -20,11 +12,6 @@ bool xMatch::Success() const
 
 xMatchCollection::xMatchCollection()
 {
-}
-
-xMatchCollection::xMatchCollection(xMatchCollection&& other)
-{	
-	std::swap(mMatches, other.mMatches);
 }
 
 xMatchCollection::~xMatchCollection()

@@ -23,7 +23,6 @@ public:
 	typedef typename TreeType::Iterator Iterator;
 
 	xMap();
-	xMap(const xMap& other);
 	~xMap();
 
 	Iterator Insert(const KEYTYPE& key, const VALUETYPE& value);
@@ -42,6 +41,8 @@ public:
 	bool Contains(const KEYTYPE& key) const;	
 protected:	
 	TreeType	mTree;
+private:
+	xMap(const xMap& other);
 };
 
 

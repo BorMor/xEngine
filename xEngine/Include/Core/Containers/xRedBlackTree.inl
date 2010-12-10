@@ -78,17 +78,7 @@ namespace Internal
 	xRedBlackTreeBase<TRAITS>::xRedBlackTreeBase()
 		: mRoot(&mSentinel), mSize(0)
 	{
-	}
-
-	template <typename TRAITS>
-	xRedBlackTreeBase<TRAITS>::xRedBlackTreeBase(const xRedBlackTreeBase& other)
-		: mRoot(&mSentinel), mSize(0)
-	{
-		if (other.mRoot != &mSentinel)
-		{
-			mRoot = new Node(*other.mRoot);
-		}
-	}
+	}	
 
 	template <typename TRAITS>
 	xRedBlackTreeBase<TRAITS>::~xRedBlackTreeBase()
@@ -470,5 +460,10 @@ namespace Internal
 			}
 		}
 		return next;
+	}
+
+	template <typename TRAITS>
+	xRedBlackTreeBase<TRAITS>::xRedBlackTreeBase(const xRedBlackTreeBase& other)
+	{
 	}
 }

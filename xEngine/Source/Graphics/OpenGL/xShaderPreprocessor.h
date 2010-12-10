@@ -45,25 +45,30 @@ protected:
 		
 		// Replace #include "..." statements
 		xString text;
-		xMatchCollection matches = xRegex::Matches(source, "(?:#include\\s*\"(.*?)\")", xRegexOptions::Multiline);
-		size_t index = 0;
-		for (auto it = matches.Begin(); it != matches.End(); ++it)
+		xMatchCollection matches;
+		if (xRegex::Matches(source, "(?:#include\\s*\"(.*?)\")", matches, xRegexOptions::Multiline))
 		{
-			// Concatenate part before match
-			text += source.SubString(index, (*it)->Index() - index);
+			size_t index = 0;
+			for (xMatchCollection::Iterator it = matches.Begin(); it != matches.End(); ++it)
+			{
+				// Concatenate part before match
+				text += source.SubString(index, (*it)->Index() - index);
 
-			// Replace with content
-			xString include = (*it)->Groups[0].Value();
-			xString left, right;
-			Explode(include, left, right);
-			text += Prepare(dir + left, right);
+				// Replace with content
+				xString include = (*it)->Groups[0].Value();
+				xString left, right;
+				Explode(include, left, right);
+				text += Prepare(dir + left, right);
 
-			index = (*it)->Index() + (*it)->Length();
+				index = (*it)->Index() + (*it)->Length();
+			}
+			// Concatenate remainded chars
+			size_t remains = source.Length() - index;
+			if (remains)
+				text += source.SubString(index, remains);
 		}
-		// Concatenate remainded chars
-		size_t remains = source.Length() - index;
-		if (remains)
-			text += source.SubString(index, remains);
+		else
+			text = source;
 		
 		return text;
 	}

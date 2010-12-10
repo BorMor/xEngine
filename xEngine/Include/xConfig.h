@@ -66,3 +66,8 @@
 #if defined(__LP64__) || defined(WIN64)
 #	define x64
 #endif
+
+#if (defined(xCOMPILER_MSVC) && _MSC_VER >= 1600) || (defined(xCOMPILER_GCC) && defined(__GXX_EXPERIMENTAL_CXX0X__))
+#define xCPP0X_ENABLED
+#endif
+

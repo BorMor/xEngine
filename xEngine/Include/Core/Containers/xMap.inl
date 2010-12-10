@@ -4,12 +4,6 @@ xMap<KEYTYPE, VALUETYPE>::xMap()
 }
 
 template <typename KEYTYPE, typename VALUETYPE>
-xMap<KEYTYPE, VALUETYPE>::xMap(const xMap& other)
-	: mTree(other.mTree)
-{
-}
-
-template <typename KEYTYPE, typename VALUETYPE>
 xMap<KEYTYPE, VALUETYPE>::~xMap()
 {
 }
@@ -86,4 +80,9 @@ template <typename KEYTYPE, typename VALUETYPE>
 bool xMap<KEYTYPE, VALUETYPE>::Contains(const KEYTYPE& key) const
 {
 	return mTree.Find(key) != mTree.End();
+}
+
+template <typename KEYTYPE, typename VALUETYPE>
+xMap<KEYTYPE, VALUETYPE>::xMap(const xMap& other)
+{
 }

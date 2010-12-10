@@ -62,11 +62,11 @@ typedef double			xDouble;
 
 #include "Graphics/xPixelShader.h"
 #include "Graphics/xVertexShader.h"
-#include "Graphics/xMaterial.h"
 #include "Graphics/xVertexFormat.h"
 #include "Graphics/xIndexBuffer.h"
 #include "Graphics/xVertexBuffer.h"
 #include "Graphics/xRenderWindow.h"
+#include "Graphics/xGPUProgram.h"
 #include "Graphics/xRenderDevice.h"
 
 #include "Graphics/xMesh.h"

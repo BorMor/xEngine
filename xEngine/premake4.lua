@@ -5,6 +5,8 @@ project "xEngine"
 
   targetdir "../Buildscrap/Bin"
 
+  flags { "NoExceptions", "NoRTTI" }
+
   language "C++"
     includedirs { "Include" }
     files { "**.h", "**.cpp", "**.inl" }
@@ -17,12 +19,29 @@ project "xEngine"
 
   if os.is("linux") then
 	excludes { "**/Win32/**" }
-    links "GL"
   elseif os.is("windows") then
 	excludes { "**/Linux/**" }
 	defines { "xENGINE_EXPORTS" }
-    links { "OpenGL32" }
-    links { "Gdi32" }
+  end
+
+  if _OPTIONS["gfxapi"] == "opengl" then
+     excludes { "**/Direct3D/**" }
+     
+	 defines { "xRENDERSYSTEM_OPENGL" }
+     if os.is("linux") then
+	   links "GL"
+	 elseif os.is("windows") then
+       links { "OpenGL32" }
+       links { "Gdi32" }
+	 end
+  elseif _OPTIONS["gfxapi"] == "d3d" then
+    excludes { "**/OpenGL/**" }
+
+    defines { "xRENDERSYSTEM_DIRECT3D" }
+	includedirs { "%DXSDK_DIR%Include" }
+	libdirs { "%DXSDK_DIR%Lib\x86" }
+	
+    links "d3d10"
   end
 
   configuration "Debug"

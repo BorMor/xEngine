@@ -15,7 +15,7 @@ xTEST(Array)
 			sum1 += arr[i];
 
 		int sum2 = 0;		
-		for (auto it = arr.Begin(); it != arr.End(); ++it)
+		for (xArray<int>::Iterator it = arr.Begin(); it != arr.End(); ++it)
 			sum2 += *it;
 		xCHECK(sum1 == sum2);
 		xCHECK(sum1 == 435);
@@ -27,14 +27,14 @@ xTEST(Array)
 		xArray<xString> arr;
 		arr.AddBack("ab");
 		arr.AddBack("cd");
-		auto it = arr.Find("cd");
+		xArray<xString>::Iterator it = arr.Find("cd");
 		arr.InsertAfter(it, "01");
 		arr.AddBack("ef");
 		it = arr.Find("cd");
 		arr.InsertBefore(it, "23");
 		xCHECK(arr[1] == "23")
 		xString s;
-		for (auto it = arr.Begin(); it != arr.End(); ++it)
+		for (xArray<xString>::Iterator it = arr.Begin(); it != arr.End(); ++it)
 			s += *it;
 		xCHECK(s == "ab23cd01ef");
 	}
@@ -50,7 +50,7 @@ xTEST(Array)
 		arr.AddBack('2');
 		arr.AddBack('3');
 		arr.AddBack('4');
-		auto it = arr.Find('3');
+		xArray<char>::Iterator it = arr.Find('3');
 		arr.InsertAfter(it, '5');
 		it = arr.Find('4');
 		arr.InsertAfter(it, '6');
@@ -60,13 +60,13 @@ xTEST(Array)
 		it = arr.Find('6');
 		arr.InsertBefore(it, '8');
 		xString str;
-		for (auto it = arr.Begin(); it != arr.End(); ++it)
+		for (xArray<char>::Iterator it = arr.Begin(); it != arr.End(); ++it)
 			str += *it;
 		xCHECK(str == "910235486");
 		str = "";
 		it = arr.Find('3');
 		arr.Remove(it);
-		for (auto it = arr.Begin(); it != arr.End(); ++it)
+		for (xArray<char>::Iterator it = arr.Begin(); it != arr.End(); ++it)
 			str += *it;
 		xCHECK(arr.Size() == 8); 
 		xCHECK(str == "91025486");

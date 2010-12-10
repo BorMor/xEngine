@@ -32,16 +32,7 @@ public:
 	static const xMatrix IDENTITY;
 };
 
-class xProjectionMatrix : public xMatrix
-{
-public:
-	xProjectionMatrix(float fovy, float aspect, float znear, float zfar);
-};
-
-class xViewMatrix : public xMatrix
-{
-public:
-	xViewMatrix(const xVector3& eye, const xVector3& at, const xVector3& up);
-};
+void xBuildProjectionMatrix(xMatrix& matrix, float fovy, float aspect, float znear, float zfar);
+void xBuildViewMatrix(xMatrix& matrix, const xVector3& eye, const xVector3& at, const xVector3& up);
 
 #include "xMatrix.inl"

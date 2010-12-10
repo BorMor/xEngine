@@ -12,6 +12,12 @@ project "Game"
   if os.is("windows") then    
     flags { "WinMain" }
   end
+
+  if _OPTIONS["gfxapi"] == "opengl" then
+	defines { "xRENDERSYSTEM_OPENGL" }
+  elseif _OPTIONS["gfxapi"] == "d3d" then
+    defines { "xRENDERSYSTEM_DIRECT3D" }
+  end
  
   configuration "Debug"
     targetsuffix "_d"
@@ -21,3 +27,4 @@ project "Game"
   configuration "Release"
     defines { "NDEBUG" }
     flags { "Optimize" } 
+

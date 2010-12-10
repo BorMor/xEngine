@@ -3,7 +3,7 @@
 class xEXPORT xPixelShader
 {
 	xHIDE_IMPLEMENTATION
-	friend class xMaterial;	
+	friend class xGPUProgram;	
 	friend class xRenderDevice;	
 public:
 	xPixelShader(const xString& source);

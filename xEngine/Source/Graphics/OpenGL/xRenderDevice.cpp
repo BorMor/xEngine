@@ -1,6 +1,6 @@
 #include "xEngine.h"
 #include "xPrerequisites.h"
-#include "xMaterialImpl.h"
+#include "xGPUProgramImpl.h"
 #include "xVertexBufferImpl.h"
 
 #if defined(xPLATFORM_WIN32)
@@ -70,7 +70,7 @@
 
 struct xRenderDevice::Impl
 {
-	xMaterial*		mMaterial;
+	xGPUProgram*		mProgram;
 #if defined(xPLATFORM_WIN32)
 	HGLRC			mRenderingContext;
 #elif defined(xPLATFORM_LINUX)
@@ -182,7 +182,7 @@ xRenderDevice::xRenderDevice(xRenderWindow* window)
 
 	xOpenGL::Init();
 	
-	pImpl->mMaterial = 0;	
+	pImpl->mProgram = 0;	
 }
 
 xRenderDevice::~xRenderDevice()
@@ -205,11 +205,11 @@ void xRenderDevice::Clear(const xColor& color)
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void xRenderDevice::SetMaterial(xMaterial* material)
+void xRenderDevice::SetProgram(xGPUProgram* program)
 {
-	pImpl->mMaterial = material;
-	if (pImpl->mMaterial)
-		glUseProgram(pImpl->mMaterial->pImpl->mProgram);
+	pImpl->mProgram = program;
+	if (pImpl->mProgram)
+		glUseProgram(pImpl->mProgram->pImpl->mProgram);
 	else
 		glUseProgram(0);
 }
@@ -246,10 +246,4 @@ void xRenderDevice::Present()
 
 void xRenderDevice::SetUniform(const xString& name, const xMatrix& value)
 {
-	if (pImpl->mMaterial)
-	{
-		GLint location = glGetUniformLocation(pImpl->mMaterial->pImpl->mProgram, name.c_str());
-		if (location != -1)
-			glUniformMatrix4fv(location, 1, GL_FALSE, &value.M00);
-	}
 }

@@ -13,17 +13,7 @@ xArray<TYPE>::xArray(size_t size)
 	Resize(size);
 }
 
-template<typename TYPE>
-xArray<TYPE>::xArray(const xArray& other)
-	: mBegin(0), mEnd(0), mAllocationEnd(0)
-{
-	if (other.Size() == 0)
-		return;
-	ReAlloc(other.Capacity(), true);
-	xCopyConstructN(mBegin, other.mBegin, other.Size());
-	mEnd = mBegin + other.Size();
-}
-
+#if defined(xCPP0X_ENABLED)
 template<typename TYPE>
 xArray<TYPE>::xArray(xArray&& other)
 	: mBegin(0), mEnd(0), mAllocationEnd(0)
@@ -32,6 +22,7 @@ xArray<TYPE>::xArray(xArray&& other)
 	std::swap(mEnd, other.mEnd);
 	std::swap(mAllocationEnd, other.mAllocationEnd);
 }
+#endif
 
 template<typename TYPE>
 xArray<TYPE>::~xArray()
@@ -155,7 +146,7 @@ typename xArray<TYPE>::Iterator xArray<TYPE>::End() const
 template<typename TYPE>
 typename xArray<TYPE>::Iterator xArray<TYPE>::Find(const TYPE& value) const
 {
-	for (auto it = mBegin; it != mEnd; ++it)
+	for (xArray<TYPE>::Iterator it = mBegin; it != mEnd; ++it)
 		if (*it == value)
 			return it;
 	return mEnd;
@@ -213,4 +204,9 @@ void xArray<TYPE>::ReAlloc(size_t capacity, bool discard_old)
 	mBegin = new_data;
 	mEnd = mBegin + old_size;
 	mAllocationEnd = mBegin + capacity;
+}
+
+template<typename TYPE>
+xArray<TYPE>::xArray(const xArray& other)
+{
 }

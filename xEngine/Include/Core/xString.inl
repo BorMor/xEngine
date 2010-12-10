@@ -11,6 +11,7 @@ xString::xString(const xString& other)
 	Set(other.mData, other.mLength);
 }
 
+#if defined(xCPP0X_ENABLED)
 xFORCE_INLINE
 xString::xString(xString&& other)
 {
@@ -23,6 +24,7 @@ xString::xString(xString&& other)
 	mAllocated = other.mAllocated;
 	other.mData = other.mBaseBuffer;
 }
+#endif
 
 xFORCE_INLINE
 xString::xString(const xChar* text)
