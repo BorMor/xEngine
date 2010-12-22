@@ -1,5 +1,4 @@
 #include "xEngine.h"
-#include "xVertexFormatImpl.h"
 
 size_t GetVertexElementSize(xVertexElementType::Enum type)
 {
@@ -17,20 +16,6 @@ size_t GetVertexElementSize(xVertexElementType::Enum type)
 	default:
 		return 0;
 	}
-}
-
-xVertexFormat::xVertexFormat()
-	: mSize(0)
-{
-	pImpl = new Impl;
-	pImpl->mLayout = 0;
-}
-
-xVertexFormat::~xVertexFormat()
-{	
-	if (pImpl->mLayout)
-		pImpl->mLayout->Release();
-	xSAFE_DELETE(pImpl);
 }
 
 void xVertexFormat::Clear()

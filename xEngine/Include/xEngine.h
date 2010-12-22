@@ -39,6 +39,7 @@ typedef double			xDouble;
 #include "Math/xColor.h"
 #include "Math/xVector2.h"
 #include "Math/xVector3.h"
+#include "Math/xVector4.h"
 #include "Math/xPlane.h"
 #include "Math/xQuaternion.h"
 #include "Math/xMatrix.h"
@@ -66,7 +67,8 @@ typedef double			xDouble;
 #include "Graphics/xIndexBuffer.h"
 #include "Graphics/xVertexBuffer.h"
 #include "Graphics/xRenderWindow.h"
-#include "Graphics/xGPUProgram.h"
+#include "Graphics/xProgramVariable.h"
+#include "Graphics/xProgram.h"
 #include "Graphics/xRenderDevice.h"
 
 #include "Graphics/xMesh.h"

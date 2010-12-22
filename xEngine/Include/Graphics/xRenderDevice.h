@@ -20,7 +20,7 @@ public:
 	~xRenderDevice();
 	
 	void Clear(const xColor& color);
-	void SetProgram(xGPUProgram* program);
+	void SetProgram(xProgram* program);
 	//void SetIndexBuffer(xIndexBuffer* buffer);	
 	void SetVertexBuffer(xVertexBuffer* buffer);
 	void DrawPrimitive(xPrimitiveType::Enum type, xUInt32 start_vertex, xUInt32 vertex_count);

@@ -5,5 +5,5 @@
 struct xPixelShader::Impl
 {
 	ID3D10PixelShader*		mShader;
-	ID3D10ShaderReflection*	mReflection;
+	ID3D10Blob*				mCompiledShader;
 };

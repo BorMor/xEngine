@@ -1,6 +1,7 @@
 #include "xEngine.h"
 #include "xPrerequisites.h"
-#include "xGPUProgramImpl.h"
+#include "xProgramImpl.h"
+#include "xConstantBufferImpl.h"
 #include "xVertexBufferImpl.h"
 
 #if defined(xPLATFORM_WIN32)
@@ -70,7 +71,7 @@
 
 struct xRenderDevice::Impl
 {
-	xGPUProgram*		mProgram;
+	xProgram*		mProgram;
 #if defined(xPLATFORM_WIN32)
 	HGLRC			mRenderingContext;
 #elif defined(xPLATFORM_LINUX)
@@ -205,11 +206,21 @@ void xRenderDevice::Clear(const xColor& color)
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void xRenderDevice::SetProgram(xGPUProgram* program)
+void xRenderDevice::SetProgram(xProgram* program)
 {
 	pImpl->mProgram = program;
 	if (pImpl->mProgram)
-		glUseProgram(pImpl->mProgram->pImpl->mProgram);
+	{
+		xProgram::Impl* program_impl = pImpl->mProgram->pImpl;
+		glUseProgram(program_impl->mProgram);
+		program_impl->SetupUniforms();
+		for (GLuint i = 0; i < program_impl->mBuffers.Size(); i++)
+		{
+			xConstantBuffer* buffer = program_impl->mBuffers[i];
+			buffer->Flush();
+			glBindBuffer(GL_UNIFORM_BUFFER, buffer->pImpl->mUBO);
+		}
+	}
 	else
 		glUseProgram(0);
 }

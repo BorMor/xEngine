@@ -14,16 +14,24 @@ public:
 		
 		//xFile::Open("sdf");
 #ifdef xRENDERSYSTEM_OPENGL
-		mProgram = new xGPUProgram("Data/Shaders/basic.vert", "Data/Shaders/basic.frag");
+		mProgram = new xProgram("Data/Shaders/basic.vert", "Data/Shaders/basic.frag");
 #else		
-		mProgram = new xGPUProgram("Data/Shaders/basicVS.hlsl", "Data/Shaders/basicPS.hlsl");
+		mProgram = new xProgram("Data/Shaders/basicVS.hlsl", "Data/Shaders/basicPS.hlsl");
 #endif
+		
+		bool f1 = mProgram->GetVariableByName("diffuse")->IsValid();
+		xProgramVectorVariable* diffuse = mProgram->GetVariableByName("diffuse")->AsVector();
+		bool f2= diffuse->IsValid();
+		//diffuse->
+		xVector4 value(1.f, 0.f, 0.f, 1.f);
+		diffuse->Set(value);
+
 		return true;
 	}
 
 	void OnUpdate(float dt)
 	{
-		mRenderDevice->Clear(xColor::BLACK);		
+		mRenderDevice->Clear(xColor::BLACK);
 		mRenderDevice->SetProgram(mProgram);
 		mRenderDevice->SetVertexBuffer(mVertexBuffer);
 		mRenderDevice->DrawPrimitive(xPrimitiveType::PointList, 0, mVertexBuffer->VertexCount());
@@ -36,7 +44,7 @@ public:
 		xSAFE_DELETE(mVertexBuffer);
 	}
 protected:
-	xGPUProgram*	mProgram;
+	xProgram*		mProgram;
 	xVertexBuffer*	mVertexBuffer;
 };
 

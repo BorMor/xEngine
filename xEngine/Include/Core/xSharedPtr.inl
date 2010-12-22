@@ -18,8 +18,11 @@ template <typename TYPE>
 xSharedPtr<TYPE>::xSharedPtr(TYPE* object)
 {
 	mObject = object;
-	mReferenceCount = new xUInt32(0);
-	IncRef();
+	if (mObject)
+	{
+		mReferenceCount = new xUInt32(0);
+		IncRef();
+	}
 }
 
 template <typename TYPE>

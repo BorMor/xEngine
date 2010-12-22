@@ -4,17 +4,17 @@
 xPixelShader::xPixelShader(const xString& source)
 {
 	pImpl = new Impl;
-	ID3D10Blob*	blob = 0;
 	ID3D10Blob*	msgs = 0;
-	D3D10CompileShader(source.c_str(), source.Length(), 0, 0, 0, "main", "ps_4_0", 0, &blob, &msgs);	//4_1??
-
-	gDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), &pImpl->mShader);
-	D3D10ReflectShader(blob->GetBufferPointer(), blob->GetBufferSize(), &pImpl->mReflection);
-	blob->Release();	
+	D3D10CompileShader(source.c_str(), source.Length(), 0, 0, 0, "main", "ps_4_0", 0, &pImpl->mCompiledShader, &msgs);	//4_1??
+	if (msgs)
+		OutputDebugString((char*)msgs->GetBufferPointer());
+	gDevice->CreatePixelShader(pImpl->mCompiledShader->GetBufferPointer(), pImpl->mCompiledShader->GetBufferSize(), &pImpl->mShader);
 }
 
 xPixelShader::~xPixelShader()
 {
+	if (pImpl->mCompiledShader)
+		pImpl->mCompiledShader->Release();
 	if (pImpl->mShader)
 		pImpl->mShader->Release();
 	xSAFE_DELETE(pImpl);

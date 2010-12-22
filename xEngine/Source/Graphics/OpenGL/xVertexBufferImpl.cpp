@@ -1,7 +1,6 @@
 #include "xEngine.h"
 #include "xPrerequisites.h"
 #include "xVertexBufferImpl.h"
-#include "xVertexFormatImpl.h"
 
 xVertexBuffer::xVertexBuffer(xSharedPtr<xVertexFormat> vertex_format, size_t vertex_count, size_t stride)
 	: mStride(stride), mVertexCount(vertex_count)
@@ -18,9 +17,9 @@ xVertexBuffer::xVertexBuffer(xSharedPtr<xVertexFormat> vertex_format, size_t ver
 	if (stride == 0)
 		stride = vertex_format->VertexSize();
 	
-	const xVertexFormat::Impl::ElementList& elements = vertex_format->pImpl->mElements;
+	const xVertexFormat::ElementList& elements = vertex_format->mElements;
 
-	for (xVertexFormat::Impl::ElementList::Iterator it = elements.Begin(); it != elements.End(); ++it)
+	for (xVertexFormat::ElementList::Iterator it = elements.Begin(); it != elements.End(); ++it)
 	{					
 		GLint size;
 		GLenum type;
