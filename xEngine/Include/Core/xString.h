@@ -35,7 +35,7 @@ public:
 	xString& operator +=(const char c);
 
 	const xChar* c_str() const;
-	void* Data();
+	void* Data() const;
 	xChar& operator[](int index);
 	const xChar& operator[](int index) const;
 

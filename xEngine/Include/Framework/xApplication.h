@@ -1,5 +1,7 @@
 #pragma once
 
+#include "xLogFileWriter.h"
+
 class xEXPORT xApplication
 {
 public:
@@ -12,6 +14,8 @@ public:
 
 	virtual bool OnInit() = 0;
 	virtual void OnShutdown() = 0;
+protected:
+	xLogFileWriter*	mLogFileWriter;
 };
 
 #if defined(xPLATFORM_WIN32)

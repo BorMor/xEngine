@@ -7,7 +7,7 @@
 	{ if(p) { delete [] p;     p=NULL; } }
 
 #define xHIDE_IMPLEMENTATION	\
-private:						\
+protected:						\
 	struct Impl;				\
 	Impl*	pImpl;
 

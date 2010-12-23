@@ -4,12 +4,12 @@ xApplication*   XApplication = NULL;
 
 xApplication::xApplication()
 {
-/*	XFileSystem = new xFileSystem();
-	XResourceManager = new xResourceManager();*/
+	mLogFileWriter = new xLogFileWriter("log.txt");
+	xLog.AddListener(mLogFileWriter);
 }
 
 xApplication::~xApplication()
 {
-	/*xSAFE_DELETE(XResourceManager);
-	xSAFE_DELETE(XFileSystem);*/
+	xLog.RemoveListener(mLogFileWriter);
+	xSAFE_DELETE(mLogFileWriter);
 }
