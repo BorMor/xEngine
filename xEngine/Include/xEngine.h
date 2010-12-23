@@ -57,6 +57,8 @@ typedef double			xDouble;
 #include "IO/xBinaryReader.h"
 #include "IO/xBinaryWriter.h"
 
+#include "IO/xLogManager.h"
+
 #include "Util/xJson.h"
 
 #include "Text/xRegex.h"

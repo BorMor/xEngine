@@ -156,7 +156,7 @@ const xChar* xString::c_str() const
 }
 
 xFORCE_INLINE
-void* xString::Data()
+void* xString::Data() const
 {
 	return mData;
 }
