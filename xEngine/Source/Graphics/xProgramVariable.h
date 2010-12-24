@@ -21,6 +21,12 @@ struct xProgramVariable::Impl
 {
 	typedef xList<xProgramVariableSetter*>	SetterList;
 
+	~Impl()
+	{
+		for(SetterList::Iterator it = mSetters.Begin(); it != mSetters.End(); ++it)
+			delete *it;
+	}
+
 	void AddSetter(xProgramVariableSetter* setter)
 	{
 		mSetters.AddBack(setter);
