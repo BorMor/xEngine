@@ -1,10 +1,19 @@
 #include <xEngine.h>
 
+#if defined(xPLATFORM_WIN32)
+	#include <crtdbg.h>
+#endif
+
 class Application : public xGraphicApplication
 {
 public:
 	bool OnInit()
 	{
+#if defined(xPLATFORM_WIN32)
+		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+		//_CrtSetBreakAlloc(166); // for memory leak
+#endif
+
 		xFileStream* stream = new xFileStream("Data/Meshes/nanosuit.mesh", xAccessMode::Read);
 		xBinaryReader reader(stream);
 		reader.ReadUInt32();	// 'MESH'		
