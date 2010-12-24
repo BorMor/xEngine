@@ -91,8 +91,9 @@ bool xJsonReader::ReadObject(xJsonValue& value)
 		}
 		else if (state == Value)
 		{
-			ReturnToken();
-				
+			if (token == xJsonTokenType::ObjectEnd && value.Size() == 0)
+				break;
+			ReturnToken();			
 			xJsonValue* val = new xJsonValue();
 			if (!ReadValue(*val))
 			{
@@ -138,6 +139,8 @@ bool xJsonReader::ReadArray(xJsonValue& value)
 			return false;
 		if (state == Value)
 		{
+			if (token == xJsonTokenType::ArrayEnd && value.Size() == 0)
+				break;
 			ReturnToken();
 			xJsonValue* val = new xJsonValue();
 			if (!ReadValue(*val))
@@ -168,10 +171,13 @@ bool xJsonReader::ReadArray(xJsonValue& value)
 bool xJsonReader::ReadBoolean(xJsonValue& value)
 {
 	ReturnToken();
-	if (Match("true"))
+	if (*mCurrent == 't')
 	{
-		value = xJsonValue(true);
-		return true;
+		if (Match("true"))
+		{
+			value = xJsonValue(true);
+			return true;
+		}
 	}
 	else if (Match("false"))
 	{

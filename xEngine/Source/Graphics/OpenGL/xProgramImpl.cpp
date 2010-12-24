@@ -104,7 +104,19 @@ xProgram::xProgram(const xString& vertex_shader, const xString& pixel_shader, co
 }
 
 xProgram::~xProgram()
-{	
+{
+	for (Impl::VariableList::Iterator it = pImpl->mVariables.Begin(); it != pImpl->mVariables.End(); ++it)
+		delete it->Value();
+	pImpl->mVariables.Clear();
+
+	for (Impl::BufferList::Iterator it = pImpl->mBuffers.Begin(); it != pImpl->mBuffers.End(); ++it)
+		delete *it;
+	pImpl->mBuffers.Clear();
+
+	for (Impl::UniformInfoList::Iterator it = pImpl->mUniforms.Begin(); it != pImpl->mUniforms.End(); ++it)
+		delete it->Variable;
+	pImpl->mUniforms.Clear();
+
 	if (pImpl->mUniformsBuffer)
 		delete pImpl->mUniformsBuffer;
 
