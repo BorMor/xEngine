@@ -18,7 +18,7 @@ namespace Internal
 template <typename KEYTYPE, typename VALUETYPE>
 class xMap
 {
-	typedef Internal::xRedBlackTreeBase<Internal::xMapTraits<KEYTYPE, VALUETYPE>> TreeType;
+	typedef Internal::xRedBlackTreeBase<Internal::xMapTraits<KEYTYPE, VALUETYPE> > TreeType;
 public:
 	typedef typename TreeType::Iterator Iterator;
 
@@ -38,8 +38,8 @@ public:
 	Iterator Find(const KEYTYPE& key) const;
 
 	VALUETYPE& operator[](const KEYTYPE& key) const;
-	bool Contains(const KEYTYPE& key) const;	
-protected:	
+	bool Contains(const KEYTYPE& key) const;
+protected:
 	TreeType	mTree;
 private:
 	xMap(const xMap& other);

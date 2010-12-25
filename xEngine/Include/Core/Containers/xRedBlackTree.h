@@ -14,13 +14,13 @@ namespace Internal
 		}
 	};
 
-	
+
 	template <typename TRAITS>
 	class xRedBlackTreeBase
 	{
 	protected:
 		struct Node;
-	public:	
+	public:
 		typedef typename TRAITS::ValueType	TYPE;
 		typedef typename TRAITS::KeyType	KEYTYPE;
 
@@ -55,13 +55,13 @@ namespace Internal
 		size_t Size() const;
 		bool IsEmpty() const;
 		void Clear();
-		
+
 		Iterator Begin() const;
 		Iterator End() const;
 		Iterator Find(const KEYTYPE& key) const;
 	protected:
 		struct Node
-		{						
+		{
 			enum Color
 			{
 				Red = 0,
@@ -82,7 +82,7 @@ namespace Internal
 		};
 
 		static Node	mSentinel;
-	
+
 		Node*   mRoot;
 		size_t  mSize;
 
@@ -97,7 +97,7 @@ namespace Internal
 }
 
 template <typename TYPE>
-class xRedBlackTree : public Internal::xRedBlackTreeBase<Internal::xRedBlackTreeTraits<TYPE>>
+class xRedBlackTree : public Internal::xRedBlackTreeBase<Internal::xRedBlackTreeTraits<TYPE> >
 {
 };
 

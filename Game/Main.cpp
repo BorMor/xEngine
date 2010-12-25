@@ -1,6 +1,6 @@
 #include <xEngine.h>
 
-#if defined(xPLATFORM_WIN32)
+#if defined(xCOMPILER_MSVC)
 	#include <crtdbg.h>
 #endif
 
@@ -9,25 +9,25 @@ class Application : public xGraphicApplication
 public:
 	bool OnInit()
 	{
-#if defined(xPLATFORM_WIN32)
+#if defined(xCOMPILER_MSVC)
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 		//_CrtSetBreakAlloc(166); // for memory leak
 #endif
 
 		xFileStream* stream = new xFileStream("Data/Meshes/nanosuit.mesh", xAccessMode::Read);
 		xBinaryReader reader(stream);
-		reader.ReadUInt32();	// 'MESH'		
+		reader.ReadUInt32();	// 'MESH'
 
 		mVertexBuffer = xVertexBuffer::LoadFromStream(stream);
 		delete stream;
-		
+
 		//xFile::Open("sdf");
 #ifdef xRENDERSYSTEM_OPENGL
 		mProgram = new xProgram("Data/Shaders/basic.vert", "Data/Shaders/basic.frag");
-#else		
+#else
 		mProgram = new xProgram("Data/Shaders/basicVS.hlsl", "Data/Shaders/basicPS.hlsl");
 #endif
-		
+
 		bool f1 = mProgram->GetVariableByName("diffuse")->IsValid();
 		xProgramVectorVariable* diffuse = mProgram->GetVariableByName("diffuse")->AsVector();
 		bool f2= diffuse->IsValid();
@@ -46,7 +46,7 @@ public:
 		mRenderDevice->DrawPrimitive(xPrimitiveType::PointList, 0, mVertexBuffer->VertexCount());
 		mRenderWindow->Present();
 	}
-	
+
 	void OnShutdown()
 	{
 		xSAFE_DELETE(mProgram);

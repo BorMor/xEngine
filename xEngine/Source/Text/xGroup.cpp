@@ -31,7 +31,7 @@ xGroupCollection::xGroupCollection()
 
 xGroupCollection::~xGroupCollection()
 {
-	for (auto it = mGroups.Begin(); it != mGroups.End(); ++it)
+	for (xArray<xGroup*>::Iterator it = mGroups.Begin(); it != mGroups.End(); ++it)
 			delete *it;
 }
 
