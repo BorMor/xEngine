@@ -16,7 +16,7 @@ xMatchCollection::xMatchCollection()
 
 xMatchCollection::~xMatchCollection()
 {
-	for (auto it = mMatches.Begin(); it != mMatches.End(); ++it)
+	for (xArray<xMatch*>::Iterator it = mMatches.Begin(); it != mMatches.End(); ++it)
 		delete *it;
 }
 
