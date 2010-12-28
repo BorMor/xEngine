@@ -17,6 +17,8 @@ public:
 	xMatrix operator * (const xMatrix& other) const;
 	xMatrix& operator *= (const xMatrix& other);
 
+	xMatrix Transposed() const;
+
 	union
 	{
 		float M[4][4];
@@ -32,7 +34,9 @@ public:
 	static const xMatrix IDENTITY;
 };
 
+xEXPORT
 void xBuildProjectionMatrix(xMatrix& matrix, float fovy, float aspect, float znear, float zfar);
+xEXPORT
 void xBuildViewMatrix(xMatrix& matrix, const xVector3& eye, const xVector3& at, const xVector3& up);
 
 #include "xMatrix.inl"
