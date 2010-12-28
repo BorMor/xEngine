@@ -201,6 +201,7 @@ xRenderDevice::~xRenderDevice()
 
 void xRenderDevice::Clear(const xColor& color)
 {
+	glViewport(0, 0, 800, 600);
 	glClearColor(color.R / 255.f, color.G / 255.f, color.B / 255.f, color.A / 255.f);
 	//glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);

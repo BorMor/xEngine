@@ -69,13 +69,20 @@ xProgram::xProgram(const xString& vertex_shader, const xString& pixel_shader, co
 		case GL_FLOAT_VEC3:
 		case GL_FLOAT_VEC4:
 			program_variable = new xProgramVectorVariable(xProgramVectorVariable::Float, type - GL_FLOAT_VEC2 + 2, elements);
-			uniform_buffer_size += (type - GL_FLOAT_VEC2 + 2) * sizeof(float);
+			if (block_index == -1)
+				uniform_buffer_size += (type - GL_FLOAT_VEC2 + 2) * sizeof(float);
 			break;
 		case GL_INT_VEC2:
 		case GL_INT_VEC3:
 		case GL_INT_VEC4:
 			program_variable = new xProgramVectorVariable(xProgramVectorVariable::Int, type - GL_INT_VEC2 + 2, elements);
-			uniform_buffer_size += (type - GL_INT_VEC2 + 2) * sizeof(int);
+			if (block_index == -1)
+				uniform_buffer_size += (type - GL_INT_VEC2 + 2) * sizeof(int);
+			break;
+		case GL_FLOAT_MAT4:
+			program_variable = new xProgramMatrixVariable(xProgramMatrixVariable::RowMajor, elements);
+			if (block_index == -1)
+				uniform_buffer_size += 16 * sizeof(float);
 			break;
 		}
 
@@ -113,8 +120,6 @@ xProgram::~xProgram()
 		delete *it;
 	pImpl->mBuffers.Clear();
 
-	for (Impl::UniformInfoList::Iterator it = pImpl->mUniforms.Begin(); it != pImpl->mUniforms.End(); ++it)
-		delete it->Variable;
 	pImpl->mUniforms.Clear();
 
 	if (pImpl->mUniformsBuffer)
@@ -154,6 +159,9 @@ void xProgram::Impl::SetupUniforms()
 					break;
 				case GL_INT_VEC4:
 					glUniform4iv(it->Location, it->Elements, (const GLint*)(data + it->Offset));
+					break;
+				case GL_FLOAT_MAT4:
+					glUniformMatrix4fv(it->Location, it->Elements, GL_TRUE, (const GLfloat*)(data + it->Offset));
 					break;
 				}
 			}

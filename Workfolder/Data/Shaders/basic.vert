@@ -4,9 +4,16 @@
 
 layout(location = ATTR_POSITION) in vec4 position;
 
+uniform mat4 worldViewProj;
+uniform mat4 world;
+uniform mat4 view;
+uniform mat4 proj;
+
 void main(void)
 {
-	gl_Position.x = position.x;
-	gl_Position.y = position.z - 0.9f;
-	gl_Position.z = position.y;
+	vec4 pos = vec4(position.x, position.z, position.y, 1.f);
+	//gl_Position = pos * worldViewProj;
+	gl_Position = pos * world * view * proj;
+	//gl_Position = proj * view * world * pos;
+	//gl_Position = pos * worldViewProj;
 }

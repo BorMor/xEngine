@@ -39,7 +39,7 @@ project "xEngine"
 
     defines { "xRENDERSYSTEM_DIRECT3D" }
 	includedirs { "%DXSDK_DIR%Include" }
-	libdirs { "%DXSDK_DIR%Lib\x86" }
+	libdirs { "%DXSDK_DIR%Lib/x86" }
 	
     links "d3d10"
   end

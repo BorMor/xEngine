@@ -52,7 +52,7 @@ xMatrix xMatrix::operator * (const xMatrix& other) const
 		M00*other.M00 + M01*other.M10 + M02*other.M20 + M03*other.M30,		M00*other.M01 + M01*other.M11 + M02*other.M21 + M03*other.M31,		M00*other.M02 + M01*other.M12 + M02*other.M22 + M03*other.M32,		M00*other.M03 + M01*other.M13 + M02*other.M23 + M03*other.M33,
 		M10*other.M00 + M11*other.M10 + M12*other.M20 + M13*other.M30,		M10*other.M01 + M11*other.M11 + M12*other.M21 + M13*other.M31,		M10*other.M02 + M11*other.M12 + M12*other.M22 + M13*other.M32,		M10*other.M03 + M11*other.M13 + M12*other.M23 + M13*other.M33,
 		M20*other.M00 + M21*other.M10 + M22*other.M20 + M23*other.M30,		M20*other.M01 + M21*other.M11 + M22*other.M21 + M23*other.M31,		M20*other.M02 + M21*other.M12 + M22*other.M22 + M23*other.M32,		M20*other.M03 + M21*other.M13 + M22*other.M23 + M23*other.M33,
-		M30*other.M00 + M31*other.M10 + M32*other.M20 + M33*other.M30,		M30*other.M01 + M31*other.M11 + M32*other.M21 + M33*other.M31,		M30*other.M02 + M31*other.M12 + M02*other.M22 + M33*other.M32,		M30*other.M03 + M31*other.M13 + M32*other.M23 + M33*other.M33
+		M30*other.M00 + M31*other.M10 + M32*other.M20 + M33*other.M30,		M30*other.M01 + M31*other.M11 + M32*other.M21 + M33*other.M31,		M30*other.M02 + M31*other.M12 + M32*other.M22 + M33*other.M32,		M30*other.M03 + M31*other.M13 + M32*other.M23 + M33*other.M33
 		);
 }
 
@@ -61,4 +61,15 @@ xMatrix& xMatrix::operator *= (const xMatrix& other)
 {
 	*this = (*this)*other;
 	return *this;
+}
+
+xFORCE_INLINE
+xMatrix xMatrix::Transposed() const
+{
+	return xMatrix(
+		M00, M10, M20, M30,
+		M01, M11, M21, M31,
+		M02, M12, M22, M32,
+		M03, M13, M23, M33
+		);
 }

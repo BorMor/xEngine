@@ -4,7 +4,7 @@
 xProgramVariableHolder	gProgramDefaultVariable;
 xProgramScalarVariable	gProgramDefaultScalarVariable;
 xProgramVectorVariable	gProgramDefaultVectorVariable(xProgramVectorVariable::Float, 0, 0);
-xProgramMatrixVariable	gProgramDefaultMatrixVariable;
+xProgramMatrixVariable	gProgramDefaultMatrixVariable(xProgramMatrixVariable::RowMajor, 0);
 xProgramSamplerVariable	gProgramDefaultSamplerVariable;
 
 
@@ -65,13 +65,25 @@ bool xProgramVectorVariable::Set(const xVector4& value)
 
 // xProgramMatrixVariable
 
-xProgramMatrixVariable::xProgramMatrixVariable()
-	: xProgramVariable(xProgramVariableType::Matrix)
+xProgramMatrixVariable::xProgramMatrixVariable(Type type, size_t elements)
+	: xProgramVariable(xProgramVariableType::Matrix), mType(type), mElements(elements)
 {
 }
 
 xProgramMatrixVariable::~xProgramMatrixVariable()
 {
+}
+
+bool xProgramMatrixVariable::Set(const xMatrix& value)
+{
+	if (mType == RowMajor)
+		pImpl->WriteData((void*)&value.M00, 16*sizeof(float));
+	else
+	{
+		xMatrix transposed = value.Transposed();
+		pImpl->WriteData((void*)&transposed.M00, 16*sizeof(float));
+	}
+	return false;
 }
 
 // xProgramSamplerVariable

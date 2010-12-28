@@ -55,8 +55,19 @@ protected:
 class xEXPORT xProgramMatrixVariable : public xProgramVariable
 {
 public:
-	xProgramMatrixVariable();
+	enum Type
+	{
+		ColumnMajor,
+		RowMajor
+	};
+
+	xProgramMatrixVariable(Type type, size_t elements);
 	~xProgramMatrixVariable();
+
+	bool Set(const xMatrix& value);
+protected:
+	Type	mType;
+	size_t	mElements;
 };
 
 class xEXPORT xProgramSamplerVariable : public xProgramVariable

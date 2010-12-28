@@ -11,6 +11,7 @@ xProgram::xProgram(const xString& vertex_shader, const xString& pixel_shader, co
 	pImpl->mVertexShader = xVertexShader::LoadFromFile(vertex_shader);
 	pImpl->mPixelShader = xPixelShader::LoadFromFile(pixel_shader);
 	
+	pImpl->Reflect(pImpl->mVertexShader->pImpl->mCompiledShader, pImpl->mVSBuffers);
 	pImpl->Reflect(pImpl->mPixelShader->pImpl->mCompiledShader, pImpl->mPSBuffers);
 }
 
@@ -80,6 +81,12 @@ void xProgram::Impl::Reflect(ID3D10Blob* compiled_shader, BufferList& buffers)
 						program_variable = new xProgramVectorVariable(xProgramVectorVariable::Int, type_desc.Columns, type_desc.Elements);
 						break;
 					}
+					break;
+				case D3D_SVC_MATRIX_ROWS:
+					program_variable = new xProgramMatrixVariable(xProgramMatrixVariable::RowMajor, type_desc.Elements);
+					break;
+				case D3D_SVC_MATRIX_COLUMNS:
+					program_variable = new xProgramMatrixVariable(xProgramMatrixVariable::ColumnMajor, type_desc.Elements);
 					break;
 				}
 				if (program_variable)
