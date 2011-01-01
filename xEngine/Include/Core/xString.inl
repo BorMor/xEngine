@@ -121,6 +121,27 @@ void xString::Reserve(size_t nbytes)
 	EnsureAllocated(nbytes, false);
 }
 
+#if defined(xCPP0X_ENABLED)
+xFORCE_INLINE
+xString& xString::operator =(xString&& text)
+{
+	if (*this != text)
+	{
+		FreeData();
+		if (text.mData == text.mBaseBuffer)
+			memcpy(mData, text.mData, xSTRING_ALLOC_BASE);
+		else
+			mData = text.mData;
+		mLength = text.mLength;
+		mAllocated = text.mAllocated;
+		text.mData = text.mBaseBuffer;
+		text.mLength = 0;
+		text.mAllocated = 0;
+	}
+	return *this;
+}
+#endif
+
 xFORCE_INLINE
 xString& xString::operator =(const xString& text)
 {
