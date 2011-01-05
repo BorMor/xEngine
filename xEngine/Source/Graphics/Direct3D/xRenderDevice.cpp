@@ -2,6 +2,7 @@
 #include "xPrerequisites.h"
 #include "xGPUProgramImpl.h"
 #include "xRenderWindowImpl.h"
+#include "xIndexBufferImpl.h"
 #include "xVertexBufferImpl.h"
 #include "xVertexFormatImpl.h"
 #include "xPixelShaderImpl.h"
@@ -73,6 +74,13 @@ void xRenderDevice::SetProgram(xGPUProgram* program)
 	}
 }
 
+void xRenderDevice::SetIndexBuffer(xIndexBuffer* buffer)
+{
+	DXGI_FORMAT format = buffer->Format() == xIndexFormat::UInt16 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
+	gDevice->IASetIndexBuffer(buffer->pImpl->mBuffer, format, 0);
+}
+
+
 // d3d10 mapping for xVertexElementType
 static DXGI_FORMAT element_formats[] = 
 {
@@ -116,9 +124,8 @@ void xRenderDevice::SetVertexBuffer(xVertexBuffer* buffer)
 	}
 }
 
-void xRenderDevice::DrawPrimitive(xPrimitiveType::Enum type, xUInt32 start_vertex, xUInt32 vertex_count)
+void SetPrimitiveTopology(xPrimitiveType::Enum type)
 {
-	
 	switch (type)
 	{
 	case xPrimitiveType::PointList:
@@ -136,8 +143,21 @@ void xRenderDevice::DrawPrimitive(xPrimitiveType::Enum type, xUInt32 start_verte
 	case xPrimitiveType::TriangleStrip:
 		gDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 		break;
+	default:
+		gDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
 	}
+}
+
+void xRenderDevice::DrawPrimitive(xPrimitiveType::Enum type, xUInt32 start_vertex, xUInt32 vertex_count)
+{
+	SetPrimitiveTopology(type);	
 	gDevice->Draw(vertex_count, start_vertex);
+}
+
+void xRenderDevice::DrawIndexedPrimitive(xPrimitiveType::Enum type, xUInt32 base_vertex, xUInt32 start_index, xUInt32 index_count)
+{
+	SetPrimitiveTopology(type);	
+	gDevice->DrawIndexed(index_count, start_index, base_vertex);
 }
 
 void xRenderDevice::Present()

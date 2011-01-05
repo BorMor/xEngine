@@ -1,6 +1,7 @@
 #include "xEngine.h"
 #include "xPrerequisites.h"
 #include "xGPUProgramImpl.h"
+#include "xIndexBufferImpl.h"
 #include "xVertexBufferImpl.h"
 
 #if defined(xPLATFORM_WIN32)
@@ -71,6 +72,24 @@
 struct xRenderDevice::Impl
 {
 	xGPUProgram*		mProgram;
+	xVertexBuffer*		mVertexBuffer;
+	bool				mVertexBufferChanged;
+	xIndexBuffer*		mIndexBuffer;
+	bool				mIndexBufferChanged;
+
+	void BindNecessaryData()
+	{
+		if (mVertexBufferChanged)
+		{
+			glBindVertexArray(mVertexBuffer->pImpl->mVAO);
+			mVertexBufferChanged = false;
+		}
+		if (mIndexBufferChanged)
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer->pImpl->mIBO);
+			mIndexBufferChanged = false;
+		}
+	}
 #if defined(xPLATFORM_WIN32)
 	HGLRC			mRenderingContext;
 #elif defined(xPLATFORM_LINUX)
@@ -82,6 +101,8 @@ struct xRenderDevice::Impl
 xRenderDevice::xRenderDevice(xRenderWindow* window)
 {
 	pImpl = new Impl();
+	pImpl->mIndexBufferChanged = false;
+	pImpl->mVertexBufferChanged = false;
 
 #if defined(xPLATFORM_WIN32)
 	static	PIXELFORMATDESCRIPTOR pfd =
@@ -214,30 +235,55 @@ void xRenderDevice::SetProgram(xGPUProgram* program)
 		glUseProgram(0);
 }
 
+void xRenderDevice::SetIndexBuffer(xIndexBuffer* buffer)
+{
+	pImpl->mIndexBuffer = buffer;
+	pImpl->mIndexBufferChanged = true;	
+}
+
 void xRenderDevice::SetVertexBuffer(xVertexBuffer* buffer)
 {
-	glBindVertexArray(buffer->pImpl->mVAO);
+	pImpl->mVertexBuffer = buffer;
+	pImpl->mVertexBufferChanged = true;
+}
+
+xFORCE_INLINE
+GLenum GetMode(xPrimitiveType::Enum primitive_type)
+{
+	switch (primitive_type)
+	{
+	case xPrimitiveType::PointList:
+		return GL_POINTS;
+	case xPrimitiveType::LineList:
+		return GL_LINES;
+	case xPrimitiveType::LineStrip:
+		return GL_LINE_STRIP;					
+	case xPrimitiveType::TriangleList:
+		return GL_TRIANGLES;
+	case xPrimitiveType::TriangleStrip:
+		return GL_TRIANGLE_STRIP;
+	default:
+		return GL_POINTS;
+	}
 }
 
 void xRenderDevice::DrawPrimitive(xPrimitiveType::Enum type, xUInt32 start_vertex, xUInt32 vertex_count)
 {
-	GLenum mode = GL_POINTS;
-	switch (type)
-	{
-	case xPrimitiveType::LineList:
-		mode = GL_LINES;
-		break;
-	case xPrimitiveType::LineStrip:
-		mode = GL_LINE_STRIP;
-		break;					
-	case xPrimitiveType::TriangleList:
-		mode = GL_TRIANGLES;
-		break;
-	case xPrimitiveType::TriangleStrip:
-		mode = GL_TRIANGLE_STRIP;
-		break;
-	}
+	pImpl->BindNecessaryData();
+	GLenum mode = GetMode(type);	
 	glDrawArrays(mode, start_vertex, vertex_count);
+}
+
+void xRenderDevice::DrawIndexedPrimitive(xPrimitiveType::Enum type, xUInt32 base_vertex, xUInt32 start_index, xUInt32 index_count)
+{
+	pImpl->BindNecessaryData();
+	xIndexBuffer* index_buffer = pImpl->mIndexBuffer;
+	if (index_buffer)
+	{
+		GLenum mode = GetMode(type);	
+		GLenum type = index_buffer->Format() == xIndexFormat::UInt16 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
+		glDrawElementsBaseVertex(mode, index_count, type, NULL, base_vertex);
+	}
 }
 
 void xRenderDevice::Present()

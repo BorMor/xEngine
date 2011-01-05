@@ -58,7 +58,7 @@ xVertexBuffer::xVertexBuffer(xSharedPtr<xVertexFormat> vertex_format, size_t ver
 		glVertexAttribPointer((int)it->Usage, size, type, normalized, stride, BUFFER_OFFSET(it->Offset));
 		glEnableVertexAttribArray((int)it->Usage);
 	}
-
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
 

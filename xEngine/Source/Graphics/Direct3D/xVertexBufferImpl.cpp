@@ -12,7 +12,7 @@ xVertexBuffer::xVertexBuffer(xSharedPtr<xVertexFormat> vertex_format, size_t ver
 
 	D3D10_BUFFER_DESC desc;
 	desc.Usage = D3D10_USAGE_DEFAULT;
-	desc.ByteWidth = vertex_count * stride;
+	desc.ByteWidth = SizeInBytes();
 	desc.BindFlags = D3D10_BIND_VERTEX_BUFFER;
 	desc.CPUAccessFlags = 0;
 	desc.MiscFlags = 0;	
@@ -22,8 +22,7 @@ xVertexBuffer::xVertexBuffer(xSharedPtr<xVertexFormat> vertex_format, size_t ver
 	initial_data.SysMemPitch = 0;
 	initial_data.SysMemSlicePitch = 0;*/
 
-	HRESULT hr = gDevice->CreateBuffer(&desc, 0, &pImpl->mBuffer);		
-	int a = 1;
+	gDevice->CreateBuffer(&desc, 0, &pImpl->mBuffer);		
 }
 
 

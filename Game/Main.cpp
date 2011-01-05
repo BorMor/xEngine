@@ -10,6 +10,7 @@ public:
 		reader.ReadUInt32();	// 'MESH'		
 
 		mVertexBuffer = xVertexBuffer::LoadFromStream(stream);
+		mIndexBuffer = xIndexBuffer::LoadFromStream(stream);
 		delete stream;
 		
 		//xFile::Open("sdf");
@@ -25,19 +26,23 @@ public:
 	{
 		mRenderDevice->Clear(xColor::BLACK);		
 		mRenderDevice->SetProgram(mProgram);
+		mRenderDevice->SetIndexBuffer(mIndexBuffer);
 		mRenderDevice->SetVertexBuffer(mVertexBuffer);
-		mRenderDevice->DrawPrimitive(xPrimitiveType::PointList, 0, mVertexBuffer->VertexCount());
+		mRenderDevice->DrawIndexedPrimitive(xPrimitiveType::TriangleList, 0, 0, mIndexBuffer->IndexCount());
+		//mRenderDevice->DrawPrimitive(xPrimitiveType::PointList, 0, mVertexBuffer->VertexCount());
 		mRenderWindow->Present();
 	}
 	
 	void OnShutdown()
 	{
 		xSAFE_DELETE(mProgram);
+		xSAFE_DELETE(mIndexBuffer);
 		xSAFE_DELETE(mVertexBuffer);
 	}
 protected:
 	xGPUProgram*	mProgram;
 	xVertexBuffer*	mVertexBuffer;
+	xIndexBuffer*	mIndexBuffer;
 };
 
 xIMPLEMENT_APPLICATION(Application);
