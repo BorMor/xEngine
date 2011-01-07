@@ -14,10 +14,10 @@ public:
 		delete stream;
 		
 		//xFile::Open("sdf");
-#ifdef xRENDERSYSTEM_OPENGL
-		mProgram = new xGPUProgram("Data/Shaders/basic.vert", "Data/Shaders/basic.frag");
-#else		
+#ifdef xRENDERSYSTEM_DIRECT3D
 		mProgram = new xGPUProgram("Data/Shaders/basicVS.hlsl", "Data/Shaders/basicPS.hlsl");
+#else		
+		mProgram = new xGPUProgram("Data/Shaders/basic.vert", "Data/Shaders/basic.frag");
 #endif
 		return true;
 	}

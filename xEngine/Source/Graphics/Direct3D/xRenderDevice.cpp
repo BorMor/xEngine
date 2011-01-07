@@ -26,6 +26,23 @@ xRenderDevice::xRenderDevice(xRenderWindow* window)
     UINT height = rc.bottom - rc.top;
 
 	D3D10CreateDevice(NULL, D3D10_DRIVER_TYPE_HARDWARE, NULL, 0, D3D10_SDK_VERSION, &gDevice);		
+	
+	D3D10_RASTERIZER_DESC desc;
+	desc.FillMode = D3D10_FILL_SOLID;
+    desc.CullMode = D3D10_CULL_BACK;
+    desc.FrontCounterClockwise = false;
+    desc.DepthBias = false;
+    desc.DepthBiasClamp = 0;
+    desc.SlopeScaledDepthBias = 0;
+    desc.DepthClipEnable = false;
+    desc.ScissorEnable = false;
+    desc.MultisampleEnable = false;
+    desc.AntialiasedLineEnable = false;
+	
+	ID3D10RasterizerState* state = NULL;
+	gDevice->CreateRasterizerState(&desc, &state);
+	gDevice->RSSetState(state);
+
 	window->pImpl->Init();	
 
 	pImpl->mProgram = NULL;
