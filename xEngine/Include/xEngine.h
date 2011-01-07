@@ -67,6 +67,10 @@ typedef double			xDouble;
 #include "Graphics/xVertexFormat.h"
 #include "Graphics/xIndexBuffer.h"
 #include "Graphics/xVertexBuffer.h"
+
+#include "Graphics/xTextureFormat.h"
+#include "Graphics/xTexture2D.h"
+
 #include "Graphics/xRenderWindow.h"
 #include "Graphics/xGPUProgram.h"
 #include "Graphics/xRenderDevice.h"

@@ -19,6 +19,8 @@ public:
 #else		
 		mProgram = new xGPUProgram("Data/Shaders/basic.vert", "Data/Shaders/basic.frag");
 #endif
+		xTexture2D* texture = new xTexture2D(256, 256, 0, xTextureFormat::DXT3);
+		delete texture;
 		return true;
 	}
 
