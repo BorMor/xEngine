@@ -1,47 +1,32 @@
 #include "xEngine.h"
-//#include "xPrerequisites.h"
+#include "xPrerequisites.h"
+#include "xIndexBufferImpl.h"
 
-struct xIndexBuffer::Impl
-{
-};
 
 xIndexBuffer::xIndexBuffer(xIndexFormat::Enum format, size_t index_count)
 	: mFormat(format), mIndexCount(index_count)
 {
 	pImpl = new Impl();
-	/*
-	glGenBuffersARB(1, &pImpl->mId);
-    glBindBufferARB(GL_ARRAY_BUFFER_ARB, pImpl->mId);*/
+	
+	glGenBuffers(1, &pImpl->mIBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pImpl->mIBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, SizeInBytes(), NULL, GL_STATIC_DRAW);
 }
 
 xIndexBuffer::~xIndexBuffer()
 {
-	//glDeleteBuffersARB(1, &pImpl->mId);
+	glDeleteBuffers(1, &pImpl->mIBO);
 	xSAFE_DELETE(pImpl);
-}
-
-xIndexFormat::Enum xIndexBuffer::Format() const
-{
-	return mFormat;
-}
-
-size_t xIndexBuffer::SizeInBytes() const
-{
-	if (mFormat == xIndexFormat::UInt16)
-		return 2*mIndexCount;
-	else
-		return 4*mIndexCount;
 }
 
 void* xIndexBuffer::Lock()
 {
-    /*glBindBufferARB(GL_ARRAY_BUFFER_ARB, pImpl->mId);
-	return glMapBufferARB(GL_ARRAY_BUFFER_ARB, GL_READ_WRITE_ARB);*/
-	return 0;
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pImpl->mIBO);
+	return glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
 }
 
 void xIndexBuffer::Unlock()
 {
-    /*glBindBufferARB(GL_ARRAY_BUFFER_ARB, pImpl->mId);
-    glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);*/
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pImpl->mIBO);
+    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 }

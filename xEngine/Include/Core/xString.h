@@ -29,6 +29,9 @@ public:
 
 	void Reserve(size_t nbytes);
 
+#if defined(xCPP0X_ENABLED)
+	xString& operator =(xString&& text);
+#endif
 	xString& operator =(const xString& text);
 	xString& operator +=(const xString& text);
 	xString& operator +=(const char* text);

@@ -28,6 +28,7 @@ public:
 		reader.ReadUInt32();	// 'MESH'
 		
 		mVertexBuffer = xVertexBuffer::LoadFromStream(stream);
+		mIndexBuffer = xIndexBuffer::LoadFromStream(stream);
 		delete stream;
 
 		//xFile::Open("sdf");
@@ -36,7 +37,7 @@ public:
 #else
 		mProgram = new xProgram("Data/Shaders/basicVS.hlsl", "Data/Shaders/basicPS.hlsl");
 #endif
-
+		mTexture = xTexture2D::LoadFromFile("Data/Textures/NanoSuitBody_diffuse.dds");// new xTexture2D(256, 256, 0, xTextureFormat::DXT3);
 		bool f1 = mProgram->GetVariableByName("diffuse")->IsValid();
 		xProgramVectorVariable* diffuse = mProgram->GetVariableByName("diffuse")->AsVector();
 		bool f2= diffuse->IsValid();
@@ -64,19 +65,24 @@ public:
 	{
 		mRenderDevice->Clear(xColor::BLACK);
 		mRenderDevice->SetProgram(mProgram);
+		mRenderDevice->SetIndexBuffer(mIndexBuffer);
 		mRenderDevice->SetVertexBuffer(mVertexBuffer);
-		mRenderDevice->DrawPrimitive(xPrimitiveType::PointList, 0, mVertexBuffer->VertexCount());
+		mRenderDevice->DrawIndexedPrimitive(xPrimitiveType::TriangleList, 0, 0, mIndexBuffer->IndexCount());
 		mRenderWindow->Present();
 	}
 
 	void OnShutdown()
 	{
+		xSAFE_DELETE(mTexture);
 		xSAFE_DELETE(mProgram);
+		xSAFE_DELETE(mIndexBuffer);
 		xSAFE_DELETE(mVertexBuffer);
 	}
 protected:
 	xProgram*		mProgram;
 	xVertexBuffer*	mVertexBuffer;
+	xIndexBuffer*	mIndexBuffer;
+	xTexture2D*		mTexture;
 };
 
 xIMPLEMENT_APPLICATION(Application);
