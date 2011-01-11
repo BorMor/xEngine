@@ -19,8 +19,7 @@ public:
 #else		
 		mProgram = new xGPUProgram("Data/Shaders/basic.vert", "Data/Shaders/basic.frag");
 #endif
-		xTexture2D* texture = new xTexture2D(256, 256, 0, xTextureFormat::DXT3);
-		delete texture;
+		mTexture = xTexture2D::LoadFromFile("Data/Textures/NanoSuitBody_diffuse.dds");// new xTexture2D(256, 256, 0, xTextureFormat::DXT3);
 		return true;
 	}
 
@@ -37,6 +36,7 @@ public:
 	
 	void OnShutdown()
 	{
+		xSAFE_DELETE(mTexture);
 		xSAFE_DELETE(mProgram);
 		xSAFE_DELETE(mIndexBuffer);
 		xSAFE_DELETE(mVertexBuffer);
@@ -45,6 +45,7 @@ protected:
 	xGPUProgram*	mProgram;
 	xVertexBuffer*	mVertexBuffer;
 	xIndexBuffer*	mIndexBuffer;
+	xTexture2D*		mTexture;
 };
 
 xIMPLEMENT_APPLICATION(Application);
