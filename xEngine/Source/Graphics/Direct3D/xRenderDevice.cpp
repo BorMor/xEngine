@@ -24,8 +24,11 @@ xRenderDevice::xRenderDevice(xRenderWindow* window)
     GetClientRect(hWnd, &rc);
     UINT width = rc.right - rc.left;
     UINT height = rc.bottom - rc.top;
-
-	D3D10CreateDevice(NULL, D3D10_DRIVER_TYPE_HARDWARE, NULL, 0, D3D10_SDK_VERSION, &gDevice);		
+	UINT flags = 0;
+#ifdef xDEBUG
+	flags = D3D10_CREATE_DEVICE_DEBUG;
+#endif
+	D3D10CreateDevice(NULL, D3D10_DRIVER_TYPE_HARDWARE, NULL, flags, D3D10_SDK_VERSION, &gDevice);		
 	
 	D3D10_RASTERIZER_DESC desc;
 	desc.FillMode = D3D10_FILL_SOLID;
