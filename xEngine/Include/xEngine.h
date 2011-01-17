@@ -16,6 +16,7 @@ typedef double			xDouble;
 #elif defined(xPLATFORM_LINUX)	
 	#include <string.h>
 	#include <stdarg.h>
+	#include <stdlib.h>
 #endif
 
 #include <utility>
