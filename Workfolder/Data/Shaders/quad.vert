@@ -15,7 +15,5 @@ out vert
 void main(void)
 {
 	Vert.TexCoord = vec2(texcoord.x, texcoord.y);
-
-	vec4 pos = vec4(position.x, position.y, position.z, 1.f);
-	gl_Position = pos * worldViewProj;
+	gl_Position = vec4(position.x, position.y, position.z, 1.f);
 }

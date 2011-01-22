@@ -1,13 +1,15 @@
 #version 330
 
-uniform T
+uniform sampler2D diffuse;
+
+in vert
 {
-	vec4 diffuse;
-};
+	vec2 TexCoord;
+} Vert;
 									
 out vec4 fragColor;
 
 void main(void)
 {
-	fragColor = diffuse;
+	fragColor = texture(diffuse, Vert.TexCoord);
 }

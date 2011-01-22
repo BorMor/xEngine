@@ -6,7 +6,7 @@ xProgramScalarVariable	gProgramDefaultScalarVariable;
 xProgramVectorVariable	gProgramDefaultVectorVariable(xProgramVectorVariable::Float, 0, 0);
 xProgramMatrixVariable	gProgramDefaultMatrixVariable(xProgramMatrixVariable::RowMajor, 0);
 xProgramSamplerVariable	gProgramDefaultSamplerVariable;
-
+xProgramTextureVariable gProgramDefaultTextureVariable;
 
 // xProgramVariable
 
@@ -83,7 +83,7 @@ bool xProgramMatrixVariable::Set(const xMatrix& value)
 		xMatrix transposed = value.Transposed();
 		pImpl->WriteData((void*)&transposed.M00, 16*sizeof(float));
 	}
-	return false;
+	return true;
 }
 
 // xProgramSamplerVariable
@@ -95,6 +95,23 @@ xProgramSamplerVariable::xProgramSamplerVariable()
 
 xProgramSamplerVariable::~xProgramSamplerVariable()
 {
+}
+
+// xProgramTextureVariable
+
+xProgramTextureVariable::xProgramTextureVariable()
+	: xProgramVariable(xProgramVariableType::Texture), mTexture(NULL)
+{
+}
+
+xProgramTextureVariable::~xProgramTextureVariable()
+{
+}
+
+bool xProgramTextureVariable::Set(const xTexture* texture)
+{
+	mTexture = texture;
+	return true;
 }
 
 // xProgramVariableHolder
@@ -146,6 +163,13 @@ xProgramSamplerVariable* xProgramVariableHolder::AsSampler() const
 	if (mVariable && mVariable->Type() == xProgramVariableType::Sampler)
 		return (xProgramSamplerVariable*)(xProgramVariable*)mVariable;
 	return &gProgramDefaultSamplerVariable;
+}
+
+xProgramTextureVariable* xProgramVariableHolder::AsTexture() const
+{
+	if (mVariable && mVariable->Type() == xProgramVariableType::Texture)
+		return (xProgramTextureVariable*)(xProgramVariable*)mVariable;
+	return &gProgramDefaultTextureVariable;
 }
 
 // xProgramVariableBufferSetter

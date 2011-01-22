@@ -10,6 +10,7 @@ struct xRenderWindow::Impl
 
 	IDXGISwapChain*			mSwapChain;
 	ID3D10RenderTargetView*	mRenderTargetView;
+	ID3D10DepthStencilView*	mDepthStencilView;
 
 	void Init()
 	{
@@ -48,8 +49,33 @@ struct xRenderWindow::Impl
 
 		gDevice->CreateRenderTargetView(pBackBuffer, NULL, &mRenderTargetView);
 		pBackBuffer->Release();
+
+		ID3D10Texture2D* pDepthStencilBuffer;
+
+		D3D10_TEXTURE2D_DESC depth_desc;
+		ZeroMemory(&depth_desc, sizeof(D3D10_TEXTURE2D_DESC));
+		depth_desc.Width = width;
+		depth_desc.Height = height;
+		depth_desc.MipLevels = 1;
+		depth_desc.ArraySize = 1;
+		depth_desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depth_desc.SampleDesc.Count = 1;
+		depth_desc.SampleDesc.Quality = 0;
+		depth_desc.Usage = D3D10_USAGE_DEFAULT;
+		depth_desc.BindFlags = D3D10_BIND_DEPTH_STENCIL;
+		depth_desc.CPUAccessFlags = 0;
+		depth_desc.MiscFlags = 0;
+		gDevice->CreateTexture2D(&depth_desc, NULL, &pDepthStencilBuffer);
+
+		// Create the depth stencil view
+		D3D10_DEPTH_STENCIL_VIEW_DESC view_desc;
+		ZeroMemory( &view_desc, sizeof(D3D10_DEPTH_STENCIL_VIEW_DESC) );
+		view_desc.Format = depth_desc.Format;
+		view_desc.ViewDimension = D3D10_DSV_DIMENSION_TEXTURE2D;
+		view_desc.Texture2D.MipSlice = 0;
+		gDevice->CreateDepthStencilView(pDepthStencilBuffer, &view_desc, &mDepthStencilView);
     
-		gDevice->OMSetRenderTargets(1, &mRenderTargetView, NULL);
+		gDevice->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
 
 		// Setup the viewport
 		D3D10_VIEWPORT vp;

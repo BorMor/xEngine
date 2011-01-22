@@ -22,8 +22,9 @@ xVertexBuffer* xVertexBuffer::LoadFromStream(xStream* stream)
 	xVertexFormat* format = new xVertexFormat;
 	format->AddElement(xVertexElementType::Vector3, xVertexElementUsage::Position);
 	format->AddElement(xVertexElementType::Vector3, xVertexElementUsage::Normal);
+	format->AddElement(xVertexElementType::Vector2, xVertexElementUsage::TexCoord);
 	xUInt32 vcount = reader.ReadUInt32();
-	xUInt32 stride = 24;
+	xUInt32 stride = 32;
 	xVertexBuffer* buffer = new xVertexBuffer(format, vcount, stride);	
 	void* data = buffer->Lock();
 	reader.Read(data, vcount * stride);	

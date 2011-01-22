@@ -8,7 +8,8 @@ struct xEXPORT xProgramVariableType
 		Scalar,
 		Vector,
 		Matrix,
-		Sampler
+		Sampler,
+		Texture
 	};
 };
 
@@ -77,6 +78,18 @@ public:
 	~xProgramSamplerVariable();
 };
 
+class xEXPORT xProgramTextureVariable : public xProgramVariable
+{
+	friend class xRenderDevice;
+public:
+	xProgramTextureVariable();
+	~xProgramTextureVariable();
+
+	bool Set(const xTexture* texture);
+protected:
+	const xTexture* mTexture;
+};
+
 class xEXPORT xProgramVariableHolder
 {
 	friend class xProgram;
@@ -91,6 +104,7 @@ public:
 	xProgramVectorVariable* AsVector() const;
 	xProgramMatrixVariable* AsMatrix() const;
 	xProgramSamplerVariable* AsSampler() const;
+	xProgramTextureVariable* AsTexture() const;
 protected:
 	xSharedPtr<xProgramVariable>	mVariable;
 };

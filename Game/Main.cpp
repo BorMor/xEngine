@@ -4,6 +4,13 @@
 	#include <crtdbg.h>
 #endif
 
+struct SubMesh
+{
+	xUInt32					StartIndex;
+	xUInt32					IndexCount;
+	xSharedPtr<xTexture>	Texture;
+};
+
 class Application : public xGraphicApplication
 {
 public:
@@ -29,6 +36,21 @@ public:
 		
 		mVertexBuffer = xVertexBuffer::LoadFromStream(stream);
 		mIndexBuffer = xIndexBuffer::LoadFromStream(stream);
+		xUInt32 id = reader.ReadUInt32();	// 'SUBM'
+		size_t nsubmeshes = reader.ReadUInt32();
+		for (size_t i = 0; i < nsubmeshes; i++)
+		{
+			SubMesh submesh;
+			submesh.StartIndex = reader.ReadUInt32();
+			submesh.IndexCount = reader.ReadUInt32();
+			xByte len = reader.ReadByte();
+			xString texture_name;
+			texture_name.Reserve(len+1);			
+			reader.Read(texture_name.Data(), len);
+			texture_name[len] = 0;
+			submesh.Texture = xTexture::LoadFromFile("Data/Textures/" + texture_name);
+			mSubMeshes.AddBack(submesh);
+		}
 		delete stream;
 
 		//xFile::Open("sdf");
@@ -37,43 +59,41 @@ public:
 #else
 		mProgram = new xProgram("Data/Shaders/basicVS.hlsl", "Data/Shaders/basicPS.hlsl");
 #endif
-		mTexture = xTexture2D::LoadFromFile("Data/Textures/NanoSuitBody_diffuse.dds");// new xTexture2D(256, 256, 0, xTextureFormat::DXT3);
-		bool f1 = mProgram->GetVariableByName("diffuse")->IsValid();
-		xProgramVectorVariable* diffuse = mProgram->GetVariableByName("diffuse")->AsVector();
-		bool f2= diffuse->IsValid();
-		//diffuse->
-		xVector4 value(1.f, 0.f, 0.f, 1.f);
-		diffuse->Set(value);
+//		mTexture = // new xTexture2D(256, 256, 0, xTextureFormat::DXT3);
+		
+
 
 		xMatrix projection, world, view;
 		
 		world = xMatrix::IDENTITY;
-		xBuildViewMatrix(view, xVector3(1.f, 2.f, 2.f), xVector3(0.f, 1.f, 0.f), xVector3(0.f, 1.f, 0.f));				
+		xBuildViewMatrix(view, xVector3(-0.7f, 1.6f, -1.1f), xVector3(0.f, 1.f, 0.f), xVector3(0.f, 1.f, 0.f));				
 		xBuildProjectionMatrix(projection, 90.f, 800.f / 600.f, 0.1f, 100.f);
 
 		xMatrix worldViewProj = world * view * projection;
 
-		mProgram->GetVariableByName("worldViewProj")->AsMatrix()->Set(worldViewProj);
-		mProgram->GetVariableByName("world")->AsMatrix()->Set(world);
-		mProgram->GetVariableByName("view")->AsMatrix()->Set(view);
-		mProgram->GetVariableByName("proj")->AsMatrix()->Set(projection);
-
+		mProgram->GetVariableByName("worldViewProj")->AsMatrix()->Set(worldViewProj);		
 		return true;
 	}
 
 	void OnUpdate(float dt)
 	{
-		mRenderDevice->Clear(xColor::BLACK);
+		mRenderDevice->Clear(xColor::BLACK);		
 		mRenderDevice->SetProgram(mProgram);
 		mRenderDevice->SetIndexBuffer(mIndexBuffer);
 		mRenderDevice->SetVertexBuffer(mVertexBuffer);
-		mRenderDevice->DrawIndexedPrimitive(xPrimitiveType::TriangleList, 0, 0, mIndexBuffer->IndexCount());
+	
+		for (xList<SubMesh>::Iterator it = mSubMeshes.Begin(); it != mSubMeshes.End(); ++it)
+		{
+			mProgram->GetVariableByName("diffuse")->AsTexture()->Set(it->Texture);
+			mRenderDevice->DrawIndexedPrimitive(xPrimitiveType::TriangleList, 0, it->StartIndex, it->IndexCount);
+		}
+
 		mRenderWindow->Present();
 	}
 
 	void OnShutdown()
 	{
-		xSAFE_DELETE(mTexture);
+		mSubMeshes.Clear();
 		xSAFE_DELETE(mProgram);
 		xSAFE_DELETE(mIndexBuffer);
 		xSAFE_DELETE(mVertexBuffer);
@@ -82,7 +102,7 @@ protected:
 	xProgram*		mProgram;
 	xVertexBuffer*	mVertexBuffer;
 	xIndexBuffer*	mIndexBuffer;
-	xTexture2D*		mTexture;
+	xList<SubMesh>	mSubMeshes;
 };
 
 xIMPLEMENT_APPLICATION(Application);

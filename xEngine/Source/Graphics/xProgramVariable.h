@@ -7,6 +7,7 @@ extern xProgramScalarVariable	gProgramDefaultScalarVariable;
 extern xProgramVectorVariable	gProgramDefaultVectorVariable;
 extern xProgramMatrixVariable	gProgramDefaultMatrixVariable;
 extern xProgramSamplerVariable	gProgramDefaultSamplerVariable;
+extern xProgramTextureVariable	gProgramDefaultTextureVariable;
 
 class xProgramVariableSetter
 {	

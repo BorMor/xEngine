@@ -11,8 +11,8 @@ xProgram::xProgram(const xString& vertex_shader, const xString& pixel_shader, co
 	pImpl->mVertexShader = xVertexShader::LoadFromFile(vertex_shader);
 	pImpl->mPixelShader = xPixelShader::LoadFromFile(pixel_shader);
 	
-	pImpl->Reflect(pImpl->mVertexShader->pImpl->mCompiledShader, pImpl->mVSBuffers);
-	pImpl->Reflect(pImpl->mPixelShader->pImpl->mCompiledShader, pImpl->mPSBuffers);
+	pImpl->Reflect(pImpl->mVertexShader->pImpl->mCompiledShader, pImpl->mVSBuffers, pImpl->mVSResources);
+	pImpl->Reflect(pImpl->mPixelShader->pImpl->mCompiledShader, pImpl->mPSBuffers, pImpl->mPSResources);
 }
 
 xProgram::~xProgram()
@@ -36,12 +36,33 @@ xProgram::~xProgram()
 	xSAFE_DELETE(pImpl);
 }
 
-void xProgram::Impl::Reflect(ID3D10Blob* compiled_shader, BufferList& buffers)
+void xProgram::Impl::Reflect(ID3D10Blob* compiled_shader, BufferList& buffers, ResourceList& resources)
 {
 	ID3D10ShaderReflection*	reflection = NULL;
 	D3D10ReflectShader(compiled_shader->GetBufferPointer(), compiled_shader->GetBufferSize(), &reflection);
 	D3D10_SHADER_DESC shader_desc;
 	reflection->GetDesc(&shader_desc);
+
+	for (size_t i = 0; i < shader_desc.BoundResources; i++)
+	{
+		D3D10_SHADER_INPUT_BIND_DESC input_desc;
+		reflection->GetResourceBindingDesc(i, &input_desc);
+		
+		xProgramVariable* program_variable = NULL;
+		xString variable_name = input_desc.Name;	
+		
+		switch (input_desc.Type)
+		{
+		case D3D_SIT_TEXTURE:
+			program_variable = new xProgramTextureVariable();
+			break;
+		}
+		if (program_variable)
+		{
+			resources.AddBack(xShaderResource(input_desc.BindPoint, program_variable));
+			mVariables.Insert(variable_name, new xProgramVariableHolder(program_variable));
+		}
+	}
 	for (size_t i = 0; i < shader_desc.ConstantBuffers; i++)
 	{		
 		ID3D10ShaderReflectionConstantBuffer* constant_buffer = reflection->GetConstantBufferByIndex(i);

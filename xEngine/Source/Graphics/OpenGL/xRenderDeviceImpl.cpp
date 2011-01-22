@@ -4,6 +4,7 @@
 #include "xConstantBufferImpl.h"
 #include "xIndexBufferImpl.h"
 #include "xVertexBufferImpl.h"
+#include "xTextureImpl.h"
 
 #if defined(xPLATFORM_WIN32)
 
@@ -73,10 +74,10 @@
 struct xRenderDevice::Impl
 {
 	xProgram*		mProgram;
-	xVertexBuffer*		mVertexBuffer;
-	bool				mVertexBufferChanged;
-	xIndexBuffer*		mIndexBuffer;
-	bool				mIndexBufferChanged;
+	xVertexBuffer*	mVertexBuffer;
+	bool			mVertexBufferChanged;
+	xIndexBuffer*	mIndexBuffer;
+	bool			mIndexBufferChanged;
 
 	void BindNecessaryData()
 	{
@@ -89,6 +90,55 @@ struct xRenderDevice::Impl
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer->pImpl->mIBO);
 			mIndexBufferChanged = false;
+		}
+		if (mProgram)
+		{
+			xProgram::Impl* program_impl = mProgram->pImpl;
+			const xByte* data = program_impl->mUniformsBuffer ? (const xByte*)program_impl->mUniformsBuffer->Data() : NULL;
+			for (xProgram::Impl::UniformInfoList::Iterator it = program_impl->mUniforms.Begin(); it != program_impl->mUniforms.End(); ++it)
+			{
+				switch (it->Type)
+				{
+				case GL_FLOAT_VEC2:
+					glUniform2fv(it->Location, it->Elements, (const GLfloat*)(data + it->Offset));
+					break;
+				case GL_FLOAT_VEC3:
+					glUniform3fv(it->Location, it->Elements, (const GLfloat*)(data + it->Offset));
+					break;
+				case GL_FLOAT_VEC4:
+					glUniform4fv(it->Location, it->Elements, (const GLfloat*)(data + it->Offset));
+					break;
+				case GL_INT_VEC2:
+					glUniform2iv(it->Location, it->Elements, (const GLint*)(data + it->Offset));
+					break;
+				case GL_INT_VEC3:
+					glUniform3iv(it->Location, it->Elements, (const GLint*)(data + it->Offset));
+					break;
+				case GL_INT_VEC4:
+					glUniform4iv(it->Location, it->Elements, (const GLint*)(data + it->Offset));
+					break;
+				case GL_FLOAT_MAT4:
+					glUniformMatrix4fv(it->Location, it->Elements, GL_TRUE, (const GLfloat*)(data + it->Offset));
+					break;
+				case GL_SAMPLER_2D:
+					{
+						xProgramTextureVariable* texture = (xProgramTextureVariable*)it->Variable;
+						glActiveTexture(GL_TEXTURE0);
+						if (texture->mTexture)				
+							glBindTexture(GL_TEXTURE_2D, texture->mTexture->pImpl->mTexture);
+						else
+							glBindTexture(GL_TEXTURE_2D, 0);
+					}
+					break;
+				}
+			}
+
+			for (GLuint i = 0; i < program_impl->mBuffers.Size(); i++)
+			{
+				xConstantBuffer* buffer = program_impl->mBuffers[i];
+				buffer->Flush();
+				glBindBuffer(GL_UNIFORM_BUFFER, buffer->pImpl->mUBO);
+			}
 		}
 	}
 #if defined(xPLATFORM_WIN32)
@@ -203,7 +253,8 @@ xRenderDevice::xRenderDevice(xRenderWindow* window)
 #endif
 
 	xOpenGL::Init();
-	
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 	pImpl->mProgram = 0;	
 }
 
@@ -224,8 +275,8 @@ void xRenderDevice::Clear(const xColor& color)
 {
 	glViewport(0, 0, 800, 600);
 	glClearColor(color.R / 255.f, color.G / 255.f, color.B / 255.f, color.A / 255.f);
-	//glClearDepth(1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClearDepth(100.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void xRenderDevice::SetProgram(xProgram* program)
@@ -235,13 +286,6 @@ void xRenderDevice::SetProgram(xProgram* program)
 	{
 		xProgram::Impl* program_impl = pImpl->mProgram->pImpl;
 		glUseProgram(program_impl->mProgram);
-		program_impl->SetupUniforms();
-		for (GLuint i = 0; i < program_impl->mBuffers.Size(); i++)
-		{
-			xConstantBuffer* buffer = program_impl->mBuffers[i];
-			buffer->Flush();
-			glBindBuffer(GL_UNIFORM_BUFFER, buffer->pImpl->mUBO);
-		}
 	}
 	else
 		glUseProgram(0);
@@ -294,7 +338,8 @@ void xRenderDevice::DrawIndexedPrimitive(xPrimitiveType::Enum type, xUInt32 base
 	{
 		GLenum mode = GetMode(type);	
 		GLenum type = index_buffer->Format() == xIndexFormat::UInt16 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
-		glDrawElementsBaseVertex(mode, index_count, type, NULL, base_vertex);
+		size_t sz = index_buffer->Format() == xIndexFormat::UInt16 ? sizeof(xUInt16) : sizeof(xUInt32);
+		glDrawElementsBaseVertex(mode, index_count, type, BUFFER_OFFSET(start_index*sz), base_vertex);
 	}
 }
 

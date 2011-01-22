@@ -1,2 +1,4 @@
 #define ATTR_POSITION	0
+#define ATTR_NORMAL	1
 #define ATTR_DIFFUSE	2
+#define ATTR_TEXCOORD	3

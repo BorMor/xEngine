@@ -8,6 +8,7 @@
 #include "xPixelShaderImpl.h"
 #include "xVertexShaderImpl.h"
 #include "xConstantBufferImpl.h"
+#include "xTextureImpl.h"
 
 ID3D10Device*	gDevice = 0;
 
@@ -36,8 +37,37 @@ struct xRenderDevice::Impl
 	bool					mInputLayoutChanged;
 	xVertexBuffer::Impl*	mVertexBufferImpl;
 
-	void SetupInputLayout()
+	void BindNecessaryData()
 	{
+		if (mProgramImpl)
+		{
+			for (xProgram::Impl::BufferList::Iterator it = mProgramImpl->mVSBuffers.Begin(); it != mProgramImpl->mVSBuffers.End(); ++it)
+				(*it)->Flush();			
+
+			for (xProgram::Impl::ResourceList::Iterator it = mProgramImpl->mPSResources.Begin(); it != mProgramImpl->mPSResources.End(); ++it)
+			{
+				xShaderResource& resource = *it;
+				if (resource.mType == xShaderResource::Texture)
+				{
+					const xTexture* texture = resource.mTextureVariable->mTexture;
+					gDevice->VSSetShaderResources(resource.mSlot, 1, &texture->pImpl->mShaderResourceView);
+				}
+			}		
+		
+			for (xProgram::Impl::BufferList::Iterator it = mProgramImpl->mPSBuffers.Begin(); it != mProgramImpl->mPSBuffers.End(); ++it)
+				(*it)->Flush();
+
+			for (xProgram::Impl::ResourceList::Iterator it = mProgramImpl->mPSResources.Begin(); it != mProgramImpl->mPSResources.End(); ++it)
+			{
+				xShaderResource& resource = *it;
+				if (resource.mType == xShaderResource::Texture)
+				{
+					const xTexture* texture = resource.mTextureVariable->mTexture;
+					gDevice->PSSetShaderResources(resource.mSlot, 1, &texture->pImpl->mShaderResourceView);
+				}
+			}
+		}
+
 		if (mInputLayoutChanged)
 		{
 			if (mVertexBufferImpl)
@@ -90,11 +120,11 @@ UINT flags = 0;
 	D3D10_RASTERIZER_DESC desc;
 	desc.FillMode = D3D10_FILL_SOLID;
     desc.CullMode = D3D10_CULL_BACK;
-    desc.FrontCounterClockwise = false;
+    desc.FrontCounterClockwise = true;
     desc.DepthBias = false;
     desc.DepthBiasClamp = 0;
     desc.SlopeScaledDepthBias = 0;
-    desc.DepthClipEnable = false;
+    desc.DepthClipEnable = true;
     desc.ScissorEnable = false;
     desc.MultisampleEnable = false;
     desc.AntialiasedLineEnable = false;
@@ -126,54 +156,28 @@ void xRenderDevice::Clear(const xColor& color)
 	fcolor[2] = color.B / 255.f;
 	fcolor[3] = color.A / 255.f;
 	ID3D10RenderTargetView* target = NULL;
-	gDevice->OMGetRenderTargets(1, &target, NULL);
+	ID3D10DepthStencilView* depth_stencil = NULL;
+	gDevice->OMGetRenderTargets(1, &target, &depth_stencil);
+	
 	gDevice->ClearRenderTargetView(target, fcolor);
+	gDevice->ClearDepthStencilView(depth_stencil, D3D10_CLEAR_DEPTH, 1.f, 0);
 }
-
-#define PREPARE_BUFFERS(BUFFERS)																			\
-{																											\
-	n = BUFFERS.Size();																						\
-	if (n > 0)																								\
-	{																										\
-		buffers = new ID3D10Buffer*[n];																		\
-		size_t i = 0;																						\
-		for (xProgram::Impl::BufferList::Iterator it = BUFFERS.Begin(); it != BUFFERS.End(); ++it, ++i)		\
-		{																									\
-			xConstantBuffer* buffer = (*it);																\
-			buffer->Flush();																				\
-			buffers[i] = buffer->pImpl->mBuffer;															\
-		}																									\
-	}																										\
-}
-
 
 void xRenderDevice::SetProgram(xProgram* program)
 {
 	pImpl->mProgramImpl = program ? program->pImpl : NULL;
 	if (pImpl->mProgramImpl)
-	{
-
-		size_t n = 0;
-		ID3D10Buffer** buffers = 0;
-
-		PREPARE_BUFFERS(pImpl->mProgramImpl->mVSBuffers);
-		if (n > 0)
-		{
-			gDevice->VSSetConstantBuffers(0, n, buffers);
-			xSAFE_ARRAY_DELETE(buffers);
-		}
-
-		gDevice->VSSetShader(pImpl->mProgramImpl->mVertexShader->pImpl->mShader);
+	{		
+		int i = 0;
+		for (xProgram::Impl::BufferList::Iterator it = pImpl->mProgramImpl->mVSBuffers.Begin(); it != pImpl->mProgramImpl->mVSBuffers.End(); ++it, ++i)
+			gDevice->VSSetConstantBuffers(i, 1, &(*it)->pImpl->mBuffer);
+		gDevice->VSSetShader(pImpl->mProgramImpl->mVertexShader->pImpl->mShader);		
 		
-		PREPARE_BUFFERS(pImpl->mProgramImpl->mPSBuffers);
-		if (n > 0)
-		{
-			gDevice->PSSetConstantBuffers(0, n, buffers);
-			xSAFE_ARRAY_DELETE(buffers);
-		}
-				
+		
+		i = 0;
+		for (xProgram::Impl::BufferList::Iterator it = pImpl->mProgramImpl->mPSBuffers.Begin(); it != pImpl->mProgramImpl->mPSBuffers.End(); ++it, ++i)
+			gDevice->PSSetConstantBuffers(i, 1, &(*it)->pImpl->mBuffer);		
 		gDevice->PSSetShader(pImpl->mProgramImpl->mPixelShader->pImpl->mShader);
-
 		//@todo: gs
 	}
 }
@@ -230,13 +234,13 @@ void SetPrimitiveTopology(xPrimitiveType::Enum type)
 
 void xRenderDevice::DrawPrimitive(xPrimitiveType::Enum type, xUInt32 start_vertex, xUInt32 vertex_count)
 {
-	pImpl->SetupInputLayout();
+	pImpl->BindNecessaryData();
 	SetPrimitiveTopology(type);
 	gDevice->Draw(vertex_count, start_vertex);
 }
 void xRenderDevice::DrawIndexedPrimitive(xPrimitiveType::Enum type, xUInt32 base_vertex, xUInt32 start_index, xUInt32 index_count)
 {
-	pImpl->SetupInputLayout();
+	pImpl->BindNecessaryData();
 	SetPrimitiveTopology(type);	
 	gDevice->DrawIndexed(index_count, start_index, base_vertex);
 }

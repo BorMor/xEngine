@@ -31,6 +31,4 @@ struct xProgram::Impl
 	xBuffer*					mUniformsBuffer;
 
 	BufferList					mBuffers;
-
-	void SetupUniforms();	
 };

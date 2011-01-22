@@ -84,6 +84,11 @@ xProgram::xProgram(const xString& vertex_shader, const xString& pixel_shader, co
 			if (block_index == -1)
 				uniform_buffer_size += 16 * sizeof(float);
 			break;
+		case GL_SAMPLER_2D:
+			program_variable = new xProgramTextureVariable();
+			break;
+		default:
+			OutputDebugString(xString::Format("%d\n", type).c_str());
 		}
 
 		if (program_variable)
@@ -132,41 +137,6 @@ xProgram::~xProgram()
 		glDeleteShader(pImpl->mVertexShader);
 	xSAFE_DELETE(pImpl);
 }
-
-void xProgram::Impl::SetupUniforms()
-{
-		if (mUniformsBuffer)
-		{
-			const xByte* data = (const xByte*)mUniformsBuffer->Data();
-			for (UniformInfoList::Iterator it = mUniforms.Begin(); it != mUniforms.End(); ++it)
-			{
-				switch (it->Type)
-				{
-				case GL_FLOAT_VEC2:
-					glUniform2fv(it->Location, it->Elements, (const GLfloat*)(data + it->Offset));
-					break;
-				case GL_FLOAT_VEC3:
-					glUniform3fv(it->Location, it->Elements, (const GLfloat*)(data + it->Offset));
-					break;
-				case GL_FLOAT_VEC4:
-					glUniform4fv(it->Location, it->Elements, (const GLfloat*)(data + it->Offset));
-					break;
-				case GL_INT_VEC2:
-					glUniform2iv(it->Location, it->Elements, (const GLint*)(data + it->Offset));
-					break;
-				case GL_INT_VEC3:
-					glUniform3iv(it->Location, it->Elements, (const GLint*)(data + it->Offset));
-					break;
-				case GL_INT_VEC4:
-					glUniform4iv(it->Location, it->Elements, (const GLint*)(data + it->Offset));
-					break;
-				case GL_FLOAT_MAT4:
-					glUniformMatrix4fv(it->Location, it->Elements, GL_TRUE, (const GLfloat*)(data + it->Offset));
-					break;
-				}
-			}
-		}
-	}
 
 xProgramVariableHolder* xProgram::GetVariableByName(const xString& name)
 {
