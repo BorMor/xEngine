@@ -346,7 +346,3 @@ void xRenderDevice::DrawIndexedPrimitive(xPrimitiveType::Enum type, xUInt32 base
 void xRenderDevice::Present()
 {	
 }
-
-void xRenderDevice::SetUniform(const xString& name, const xMatrix& value)
-{
-}
