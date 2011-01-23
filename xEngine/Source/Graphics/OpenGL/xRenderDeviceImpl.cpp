@@ -138,9 +138,13 @@ struct xRenderDevice::Impl
 				case GL_SAMPLER_2D:
 					{
 						xProgramTextureVariable* texture = (xProgramTextureVariable*)it->Variable;
-						glActiveTexture(GL_TEXTURE0 + next_unused_texture_unit++);
-						if (texture->mTexture)				
-							glBindTexture(GL_TEXTURE_2D, texture->mTexture->pImpl->mTexture);
+						glUniform1i(it->Location , next_unused_texture_unit);
+						if (texture->mTexture)
+						{							
+							glActiveTexture(GL_TEXTURE0 + next_unused_texture_unit);								
+							glBindTexture(GL_TEXTURE_2D, texture->mTexture->pImpl->mTexture);							
+						}
+						next_unused_texture_unit++;
 					}
 					break;
 				}
