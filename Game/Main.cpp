@@ -8,7 +8,7 @@ struct SubMesh
 {
 	xUInt32					StartIndex;
 	xUInt32					IndexCount;
-	xSharedPtr<xTexture>	Texture;
+	xSharedPtr<xTexture>	DiffuseMap;
 };
 
 class Application : public xGraphicApplication
@@ -48,7 +48,7 @@ public:
 			texture_name.Reserve(len+1);			
 			reader.Read(texture_name.Data(), len);
 			texture_name[len] = 0;
-			submesh.Texture = xTexture::LoadFromFile("Data/Textures/" + texture_name);
+			submesh.DiffuseMap = xTexture::LoadFromFile("Data/Textures/" + texture_name);
 			mSubMeshes.AddBack(submesh);
 		}
 		delete stream;
@@ -61,7 +61,10 @@ public:
 #endif
 //		mTexture = // new xTexture2D(256, 256, 0, xTextureFormat::DXT3);
 		
+		xVector3 lightDir(0.5f, -0.2f, 0.5f);
+		lightDir.Normalize();
 
+		mProgram->GetVariableByName("lightDir")->AsVector()->Set(lightDir);
 
 		xMatrix projection, world, view;
 		
@@ -69,8 +72,10 @@ public:
 		xBuildViewMatrix(view, xVector3(-0.7f, 1.6f, -1.1f), xVector3(0.f, 1.f, 0.f), xVector3(0.f, 1.f, 0.f));				
 		xBuildProjectionMatrix(projection, 90.f, 800.f / 600.f, 0.1f, 100.f);
 
-		xMatrix worldViewProj = world * view * projection;
+		xMatrix worldView = world * view;
+		xMatrix worldViewProj = worldView * projection;
 
+		mProgram->GetVariableByName("worldView")->AsMatrix()->Set(worldView);
 		mProgram->GetVariableByName("worldViewProj")->AsMatrix()->Set(worldViewProj);		
 		return true;
 	}
@@ -84,7 +89,7 @@ public:
 	
 		for (xList<SubMesh>::Iterator it = mSubMeshes.Begin(); it != mSubMeshes.End(); ++it)
 		{
-			mProgram->GetVariableByName("diffuse")->AsTexture()->Set(it->Texture);
+			mProgram->GetVariableByName("diffuseMap")->AsTexture()->Set(it->DiffuseMap);
 			mRenderDevice->DrawIndexedPrimitive(xPrimitiveType::TriangleList, 0, it->StartIndex, it->IndexCount);
 		}
 

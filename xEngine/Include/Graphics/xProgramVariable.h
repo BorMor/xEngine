@@ -46,6 +46,7 @@ public:
 	xProgramVectorVariable(Type type, size_t columns, size_t elements);
 	~xProgramVectorVariable();
 
+	bool Set(const xVector3& value);
 	bool Set(const xVector4& value);
 protected:
 	Type	mType;

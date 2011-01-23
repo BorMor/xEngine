@@ -79,6 +79,14 @@ struct xRenderDevice::Impl
 	xIndexBuffer*	mIndexBuffer;
 	bool			mIndexBufferChanged;
 
+	GLint			mMaxTextureUnits;
+
+	void Init()
+	{
+		mProgram = 0;	
+		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &mMaxTextureUnits);
+	}
+
 	void BindNecessaryData()
 	{
 		if (mVertexBufferChanged)
@@ -93,6 +101,13 @@ struct xRenderDevice::Impl
 		}
 		if (mProgram)
 		{
+			for (GLint i = 0; i < mMaxTextureUnits; i++)
+			{
+				glActiveTexture(GL_TEXTURE0 + i);
+				glBindTexture(GL_TEXTURE_2D, 0);
+			}
+			GLint next_unused_texture_unit = 0;
+
 			xProgram::Impl* program_impl = mProgram->pImpl;
 			const xByte* data = program_impl->mUniformsBuffer ? (const xByte*)program_impl->mUniformsBuffer->Data() : NULL;
 			for (xProgram::Impl::UniformInfoList::Iterator it = program_impl->mUniforms.Begin(); it != program_impl->mUniforms.End(); ++it)
@@ -123,11 +138,9 @@ struct xRenderDevice::Impl
 				case GL_SAMPLER_2D:
 					{
 						xProgramTextureVariable* texture = (xProgramTextureVariable*)it->Variable;
-						glActiveTexture(GL_TEXTURE0);
+						glActiveTexture(GL_TEXTURE0 + next_unused_texture_unit++);
 						if (texture->mTexture)				
 							glBindTexture(GL_TEXTURE_2D, texture->mTexture->pImpl->mTexture);
-						else
-							glBindTexture(GL_TEXTURE_2D, 0);
 					}
 					break;
 				}
@@ -253,9 +266,9 @@ xRenderDevice::xRenderDevice(xRenderWindow* window)
 #endif
 
 	xOpenGL::Init();
+	pImpl->Init();
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	pImpl->mProgram = 0;	
+	glEnable(GL_CULL_FACE);	
 }
 
 xRenderDevice::~xRenderDevice()

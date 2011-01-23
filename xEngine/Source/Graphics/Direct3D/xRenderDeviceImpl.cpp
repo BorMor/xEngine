@@ -41,16 +41,24 @@ struct xRenderDevice::Impl
 	{
 		if (mProgramImpl)
 		{
+			ID3D10ShaderResourceView* no_view = NULL;
+			for (UINT i = 0; i < 128; i++)
+			{
+				gDevice->VSSetShaderResources(i, 1, &no_view);
+				gDevice->PSSetShaderResources(i, 1, &no_view);
+			}
+
 			for (xProgram::Impl::BufferList::Iterator it = mProgramImpl->mVSBuffers.Begin(); it != mProgramImpl->mVSBuffers.End(); ++it)
 				(*it)->Flush();			
 
-			for (xProgram::Impl::ResourceList::Iterator it = mProgramImpl->mPSResources.Begin(); it != mProgramImpl->mPSResources.End(); ++it)
+			for (xProgram::Impl::ResourceList::Iterator it = mProgramImpl->mVSResources.Begin(); it != mProgramImpl->mVSResources.End(); ++it)
 			{
 				xShaderResource& resource = *it;
 				if (resource.mType == xShaderResource::Texture)
 				{
 					const xTexture* texture = resource.mTextureVariable->mTexture;
-					gDevice->VSSetShaderResources(resource.mSlot, 1, &texture->pImpl->mShaderResourceView);
+					if (texture)
+						gDevice->VSSetShaderResources(resource.mSlot, 1, &texture->pImpl->mShaderResourceView);
 				}
 			}		
 		
@@ -63,7 +71,8 @@ struct xRenderDevice::Impl
 				if (resource.mType == xShaderResource::Texture)
 				{
 					const xTexture* texture = resource.mTextureVariable->mTexture;
-					gDevice->PSSetShaderResources(resource.mSlot, 1, &texture->pImpl->mShaderResourceView);
+					if (texture)
+						gDevice->PSSetShaderResources(resource.mSlot, 1, &texture->pImpl->mShaderResourceView);
 				}
 			}
 		}

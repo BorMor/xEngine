@@ -53,6 +53,16 @@ xProgramVectorVariable::~xProgramVectorVariable()
 {
 }
 
+bool xProgramVectorVariable::Set(const xVector3& value)
+{
+	if (mType == Float && mColumns == 3)
+	{
+		pImpl->WriteData((void*)&value.X, 3*sizeof(float));
+		return true;
+	}
+	return false;
+}
+
 bool xProgramVectorVariable::Set(const xVector4& value)
 {
 	if (mType == Float && mColumns == 4)
