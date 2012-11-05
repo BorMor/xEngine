@@ -1,0 +1,10 @@
+*.exe
+*.opensdf
+*.sdf
+*.sln
+*.suo
+Buildscrap/*
+xEngine/Dependencies/*
+*.vcxproj
+*.vcxproj.*
+log.txt

@@ -7,10 +7,10 @@ xConstantBuffer::xConstantBuffer(size_t size_in_bytes)
 {
 	pImpl = new Impl();	
 
-	D3D10_BUFFER_DESC desc;
-	desc.Usage = D3D10_USAGE_DEFAULT;
+	D3D11_BUFFER_DESC desc;
+	desc.Usage = D3D11_USAGE_DEFAULT;
 	desc.ByteWidth = mSizeInBytes;
-	desc.BindFlags = D3D10_BIND_CONSTANT_BUFFER;
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	desc.CPUAccessFlags = 0;
 	desc.MiscFlags = 0;	
 
@@ -26,5 +26,5 @@ xConstantBuffer::~xConstantBuffer()
 
 void xConstantBuffer::Flush()
 {
-	gDevice->UpdateSubresource(pImpl->mBuffer, 0, 0, mData, 0, 0);
+	gDeviceContext->UpdateSubresource(pImpl->mBuffer, 0, 0, mData, 0, 0);
 }

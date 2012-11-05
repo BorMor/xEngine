@@ -4,5 +4,5 @@
 
 struct xConstantBuffer::Impl
 {
-	ID3D10Buffer*	mBuffer;
+	ID3D11Buffer*	mBuffer;
 };

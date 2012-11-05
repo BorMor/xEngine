@@ -2,6 +2,6 @@
 
 struct xTexture2D::Impl
 {
-	ID3D10Texture2D*			mTexture;
-	ID3D10ShaderResourceView*	mShaderResourceView;
+	ID3D11Texture2D*			mTexture;
+	ID3D11ShaderResourceView*	mShaderResourceView;
 };

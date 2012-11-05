@@ -4,6 +4,6 @@
 
 struct xPixelShader::Impl
 {
-	ID3D10PixelShader*		mShader;
-	ID3D10Blob*				mCompiledShader;
+	ID3D11PixelShader*		mShader;
+	ID3DBlob*				mCompiledShader;
 };

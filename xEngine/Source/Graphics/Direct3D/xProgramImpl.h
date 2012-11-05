@@ -57,5 +57,5 @@ struct xProgram::Impl
 	ResourceList				mPSResources;
 	ResourceList				mGSResources;
 
-	void Reflect(ID3D10Blob* compiled_shader, BufferList& buffers, ResourceList& resources);
+	void Reflect(ID3DBlob* compiled_shader, BufferList& buffers, ResourceList& resources);
 };

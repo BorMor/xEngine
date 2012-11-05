@@ -36,16 +36,16 @@ xProgram::~xProgram()
 	xSAFE_DELETE(pImpl);
 }
 
-void xProgram::Impl::Reflect(ID3D10Blob* compiled_shader, BufferList& buffers, ResourceList& resources)
+void xProgram::Impl::Reflect(ID3DBlob* compiled_shader, BufferList& buffers, ResourceList& resources)
 {
-	ID3D10ShaderReflection*	reflection = NULL;
-	D3D10ReflectShader(compiled_shader->GetBufferPointer(), compiled_shader->GetBufferSize(), &reflection);
-	D3D10_SHADER_DESC shader_desc;
+	ID3D11ShaderReflection*	reflection = NULL;
+	D3DReflect(compiled_shader->GetBufferPointer(), compiled_shader->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&reflection);
+	D3D11_SHADER_DESC shader_desc;
 	reflection->GetDesc(&shader_desc);
 
 	for (size_t i = 0; i < shader_desc.BoundResources; i++)
 	{
-		D3D10_SHADER_INPUT_BIND_DESC input_desc;
+		D3D11_SHADER_INPUT_BIND_DESC input_desc;
 		reflection->GetResourceBindingDesc(i, &input_desc);
 		
 		xProgramVariable* program_variable = NULL;
@@ -65,19 +65,19 @@ void xProgram::Impl::Reflect(ID3D10Blob* compiled_shader, BufferList& buffers, R
 	}
 	for (size_t i = 0; i < shader_desc.ConstantBuffers; i++)
 	{		
-		ID3D10ShaderReflectionConstantBuffer* constant_buffer = reflection->GetConstantBufferByIndex(i);
-		D3D10_SHADER_BUFFER_DESC buffer_desc;
+		ID3D11ShaderReflectionConstantBuffer* constant_buffer = reflection->GetConstantBufferByIndex(i);
+		D3D11_SHADER_BUFFER_DESC buffer_desc;
 		constant_buffer->GetDesc(&buffer_desc);
 
 		xConstantBuffer* buffer = new xConstantBuffer(buffer_desc.Size);
 
 		for (size_t j = 0; j < buffer_desc.Variables; j++)
 		{
-			ID3D10ShaderReflectionVariable* variable = constant_buffer->GetVariableByIndex(j);
-			D3D10_SHADER_VARIABLE_DESC variable_desc;
+			ID3D11ShaderReflectionVariable* variable = constant_buffer->GetVariableByIndex(j);
+			D3D11_SHADER_VARIABLE_DESC variable_desc;
 			variable->GetDesc(&variable_desc);
-			ID3D10ShaderReflectionType* type = variable->GetType();
-			D3D10_SHADER_TYPE_DESC type_desc;
+			ID3D11ShaderReflectionType* type = variable->GetType();
+			D3D11_SHADER_TYPE_DESC type_desc;
 			type->GetDesc(&type_desc);
 
 			xProgramVariable* program_variable = NULL;
@@ -95,10 +95,10 @@ void xProgram::Impl::Reflect(ID3D10Blob* compiled_shader, BufferList& buffers, R
 				case D3D_SVC_VECTOR:						
 					switch (type_desc.Type)
 					{
-					case D3D10_SVT_FLOAT:
+					case D3D_SVT_FLOAT:
 						program_variable = new xProgramVectorVariable(xProgramVectorVariable::Float, type_desc.Columns, type_desc.Elements);
 						break;
-					case D3D10_SVT_INT:
+					case D3D_SVT_INT:
 						program_variable = new xProgramVectorVariable(xProgramVectorVariable::Int, type_desc.Columns, type_desc.Elements);
 						break;
 					}

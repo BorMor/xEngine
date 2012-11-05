@@ -47,8 +47,14 @@ xRenderWindow::xRenderWindow(xUInt32 width, xUInt32 height)
 
 xRenderWindow::~xRenderWindow()
 {
+	if (gDeviceContext)
+		gDeviceContext->ClearState();
+
 	if (pImpl->mRenderTargetView)
 		pImpl->mRenderTargetView->Release();
+
+	if (pImpl->mDepthStencilView)
+		pImpl->mDepthStencilView->Release();
 
     if (pImpl->mSwapChain)
 		pImpl->mSwapChain->Release();

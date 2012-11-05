@@ -3,5 +3,5 @@
 
 struct xVertexFormat::Impl
 {
-	ID3D10InputLayout*	mLayout;
+	ID3D11InputLayout*	mLayout;
 };

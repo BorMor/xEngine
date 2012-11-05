@@ -2,7 +2,7 @@
 
 struct xVertexBuffer::Impl
 {
-	ID3D10Buffer*	mBuffer;
+	ID3D11Buffer*	mBuffer;
 	xSharedPtr<xVertexFormat>	mVertexFormat;
 	void*			mData;
 };

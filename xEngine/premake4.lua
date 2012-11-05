@@ -41,7 +41,9 @@ project "xEngine"
 	includedirs { "%DXSDK_DIR%Include" }
 	libdirs { "%DXSDK_DIR%Lib/x86" }
 	
-    links "d3d10"
+    links "d3d11"
+    links "dxguid"
+    links "d3dcompiler"
   end
 
   configuration "Debug"

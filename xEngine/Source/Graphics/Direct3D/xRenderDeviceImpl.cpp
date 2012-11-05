@@ -10,9 +10,10 @@
 #include "xConstantBufferImpl.h"
 #include "xTextureImpl.h"
 
-ID3D10Device*	gDevice = 0;
+ID3D11Device*			gDevice = NULL;
+ID3D11DeviceContext*	gDeviceContext = NULL;
 
-// d3d10 mapping for xVertexElementUsage
+// d3d11 mapping for xVertexElementUsage
 static char* semantic_names[] =
 {
 	"POSITION",	// xVertexElementUsage::Position
@@ -21,7 +22,7 @@ static char* semantic_names[] =
 	"TEXCOORD",	// xVertexElementUsage::TexCoord
 };
 
-// d3d10 mapping for xVertexElementType
+// d3d11 mapping for xVertexElementType
 static DXGI_FORMAT element_formats[] = 
 {
 	DXGI_FORMAT_R32_FLOAT,			// xVertexElementType::Float,
@@ -41,11 +42,11 @@ struct xRenderDevice::Impl
 	{
 		if (mProgramImpl)
 		{
-			ID3D10ShaderResourceView* no_view = NULL;
+			ID3D11ShaderResourceView* no_view = NULL;
 			for (UINT i = 0; i < 128; i++)
 			{
-				gDevice->VSSetShaderResources(i, 1, &no_view);
-				gDevice->PSSetShaderResources(i, 1, &no_view);
+				gDeviceContext->VSSetShaderResources(i, 1, &no_view);
+				gDeviceContext->PSSetShaderResources(i, 1, &no_view);
 			}
 
 			for (xProgram::Impl::BufferList::Iterator it = mProgramImpl->mVSBuffers.Begin(); it != mProgramImpl->mVSBuffers.End(); ++it)
@@ -58,7 +59,7 @@ struct xRenderDevice::Impl
 				{
 					const xTexture* texture = resource.mTextureVariable->mTexture;
 					if (texture)
-						gDevice->VSSetShaderResources(resource.mSlot, 1, &texture->pImpl->mShaderResourceView);
+						gDeviceContext->VSSetShaderResources(resource.mSlot, 1, &texture->pImpl->mShaderResourceView);
 				}
 			}		
 		
@@ -72,7 +73,7 @@ struct xRenderDevice::Impl
 				{
 					const xTexture* texture = resource.mTextureVariable->mTexture;
 					if (texture)
-						gDevice->PSSetShaderResources(resource.mSlot, 1, &texture->pImpl->mShaderResourceView);
+						gDeviceContext->PSSetShaderResources(resource.mSlot, 1, &texture->pImpl->mShaderResourceView);
 				}
 			}
 		}
@@ -85,7 +86,7 @@ struct xRenderDevice::Impl
 				if (!vertex_format->pImpl->mLayout)
 				{		
 					UINT n_elements = vertex_format->mElements.Size();
-					D3D10_INPUT_ELEMENT_DESC* descs = new D3D10_INPUT_ELEMENT_DESC[n_elements];
+					D3D11_INPUT_ELEMENT_DESC* descs = new D3D11_INPUT_ELEMENT_DESC[n_elements];
 					for (size_t i = 0; i < n_elements; i++)
 					{
 						const xVertexFormat::Element& el = vertex_format->mElements[i];
@@ -94,19 +95,19 @@ struct xRenderDevice::Impl
 						descs[i].Format = element_formats[el.Type];
 						descs[i].InputSlot = 0;
 						descs[i].AlignedByteOffset = el.Offset;
-						descs[i].InputSlotClass = D3D10_INPUT_PER_VERTEX_DATA;
+						descs[i].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 						descs[i].InstanceDataStepRate = 0;
 					};
 
-					ID3D10Blob* blob = mProgramImpl->mVertexShader->pImpl->mCompiledShader;
+					ID3DBlob* blob = mProgramImpl->mVertexShader->pImpl->mCompiledShader;
 					HRESULT hr = gDevice->CreateInputLayout(descs, n_elements, blob->GetBufferPointer(), blob->GetBufferSize(), &vertex_format->pImpl->mLayout);
 					delete[] descs;
 				}
 		
-				gDevice->IASetInputLayout(vertex_format->pImpl->mLayout);
+				gDeviceContext->IASetInputLayout(vertex_format->pImpl->mLayout);
 			}
 			else
-				gDevice->IASetInputLayout(NULL);
+				gDeviceContext->IASetInputLayout(NULL);
 		}
 	}
 };	
@@ -120,15 +121,24 @@ xRenderDevice::xRenderDevice(xRenderWindow* window)
     GetClientRect(hWnd, &rc);
     UINT width = rc.right - rc.left;
     UINT height = rc.bottom - rc.top;
-UINT flags = 0;
+	UINT flags = 0;
 #ifdef xDEBUG
-	flags = D3D10_CREATE_DEVICE_DEBUG;
+	flags = D3D11_CREATE_DEVICE_DEBUG;
 #endif
-	D3D10CreateDevice(NULL, D3D10_DRIVER_TYPE_HARDWARE, NULL, flags, D3D10_SDK_VERSION, &gDevice);		
+
+	D3D_FEATURE_LEVEL featureLevels[] =
+    {
+        D3D_FEATURE_LEVEL_11_0
+    };
+	UINT numFeatureLevels = ARRAYSIZE(featureLevels);
+
+	D3D_FEATURE_LEVEL featureLevel;
+
+	D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, flags, featureLevels, numFeatureLevels, D3D11_SDK_VERSION, &gDevice, &featureLevel, &gDeviceContext);	
 	
-	D3D10_RASTERIZER_DESC desc;
-	desc.FillMode = D3D10_FILL_SOLID;
-    desc.CullMode = D3D10_CULL_BACK;
+	D3D11_RASTERIZER_DESC desc;
+	desc.FillMode = D3D11_FILL_SOLID;
+    desc.CullMode = D3D11_CULL_BACK;
     desc.FrontCounterClockwise = true;
     desc.DepthBias = false;
     desc.DepthBiasClamp = 0;
@@ -138,18 +148,29 @@ UINT flags = 0;
     desc.MultisampleEnable = false;
     desc.AntialiasedLineEnable = false;
 	
-	ID3D10RasterizerState* state = NULL;
+	ID3D11RasterizerState* state = NULL;
 	gDevice->CreateRasterizerState(&desc, &state);
-	gDevice->RSSetState(state);
-	window->pImpl->Init();	
+	gDeviceContext->RSSetState(state);
+	state->Release();
+	window->pImpl->Init();
 
 	pImpl->mProgramImpl = NULL;
 }
 
 xRenderDevice::~xRenderDevice()
 {
-	if (gDevice)
-		gDevice->ClearState();
+#if defined(xDEBUG)
+	/*ID3D11Debug* debug = 0; 
+	gDevice->QueryInterface(IID_ID3D11Debug, (void**) &debug); 
+	debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+	debug->Release();*/
+#endif
+
+	if (gDeviceContext)
+	{
+		gDeviceContext->ClearState();
+		gDeviceContext->Release();
+	}
     
 	if (gDevice)
 		gDevice->Release();
@@ -164,12 +185,14 @@ void xRenderDevice::Clear(const xColor& color)
 	fcolor[1] = color.G / 255.f;
 	fcolor[2] = color.B / 255.f;
 	fcolor[3] = color.A / 255.f;
-	ID3D10RenderTargetView* target = NULL;
-	ID3D10DepthStencilView* depth_stencil = NULL;
-	gDevice->OMGetRenderTargets(1, &target, &depth_stencil);
+	ID3D11RenderTargetView* target = NULL;
+	ID3D11DepthStencilView* depth_stencil = NULL;
+	gDeviceContext->OMGetRenderTargets(1, &target, &depth_stencil);
 	
-	gDevice->ClearRenderTargetView(target, fcolor);
-	gDevice->ClearDepthStencilView(depth_stencil, D3D10_CLEAR_DEPTH, 1.f, 0);
+	gDeviceContext->ClearRenderTargetView(target, fcolor);
+	gDeviceContext->ClearDepthStencilView(depth_stencil, D3D11_CLEAR_DEPTH, 1.f, 0);
+	target->Release();
+	depth_stencil->Release();
 }
 
 void xRenderDevice::SetProgram(xProgram* program)
@@ -179,14 +202,14 @@ void xRenderDevice::SetProgram(xProgram* program)
 	{		
 		int i = 0;
 		for (xProgram::Impl::BufferList::Iterator it = pImpl->mProgramImpl->mVSBuffers.Begin(); it != pImpl->mProgramImpl->mVSBuffers.End(); ++it, ++i)
-			gDevice->VSSetConstantBuffers(i, 1, &(*it)->pImpl->mBuffer);
-		gDevice->VSSetShader(pImpl->mProgramImpl->mVertexShader->pImpl->mShader);		
+			gDeviceContext->VSSetConstantBuffers(i, 1, &(*it)->pImpl->mBuffer);
+		gDeviceContext->VSSetShader(pImpl->mProgramImpl->mVertexShader->pImpl->mShader, NULL, 0);		
 		
 		
 		i = 0;
 		for (xProgram::Impl::BufferList::Iterator it = pImpl->mProgramImpl->mPSBuffers.Begin(); it != pImpl->mProgramImpl->mPSBuffers.End(); ++it, ++i)
-			gDevice->PSSetConstantBuffers(i, 1, &(*it)->pImpl->mBuffer);		
-		gDevice->PSSetShader(pImpl->mProgramImpl->mPixelShader->pImpl->mShader);
+			gDeviceContext->PSSetConstantBuffers(i, 1, &(*it)->pImpl->mBuffer);		
+		gDeviceContext->PSSetShader(pImpl->mProgramImpl->mPixelShader->pImpl->mShader, NULL, 0);
 		//@todo: gs
 	}
 }
@@ -195,7 +218,7 @@ void xRenderDevice::SetProgram(xProgram* program)
 void xRenderDevice::SetIndexBuffer(xIndexBuffer* buffer)
 {
 	DXGI_FORMAT format = buffer->Format() == xIndexFormat::UInt16 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
-	gDevice->IASetIndexBuffer(buffer->pImpl->mBuffer, format, 0);
+	gDeviceContext->IASetIndexBuffer(buffer->pImpl->mBuffer, format, 0);
 }
 
 void xRenderDevice::SetVertexBuffer(xVertexBuffer* buffer)
@@ -207,7 +230,7 @@ void xRenderDevice::SetVertexBuffer(xVertexBuffer* buffer)
 			pImpl->mInputLayoutChanged = true;
 			pImpl->mVertexBufferImpl = buffer->pImpl;
 			UINT offset = 0;
-			gDevice->IASetVertexBuffers( 0, 1, &buffer->pImpl->mBuffer, &buffer->mStride, &offset);
+			gDeviceContext->IASetVertexBuffers( 0, 1, &buffer->pImpl->mBuffer, &buffer->mStride, &offset);
 		}
 	}
 	else
@@ -222,22 +245,22 @@ void SetPrimitiveTopology(xPrimitiveType::Enum type)
 	switch (type)
 	{
 	case xPrimitiveType::PointList:
-		gDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
+		gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		break;
 	case xPrimitiveType::LineList:
-		gDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_LINELIST);
+		gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 		break;
 	case xPrimitiveType::LineStrip:
-		gDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 		break;					
 	case xPrimitiveType::TriangleList:
-		gDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		break;
 	case xPrimitiveType::TriangleStrip:
-		gDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+		gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 		break;
 	default:
-		gDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
+		gDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	}
 }
 
@@ -245,13 +268,13 @@ void xRenderDevice::DrawPrimitive(xPrimitiveType::Enum type, xUInt32 start_verte
 {
 	pImpl->BindNecessaryData();
 	SetPrimitiveTopology(type);
-	gDevice->Draw(vertex_count, start_vertex);
+	gDeviceContext->Draw(vertex_count, start_vertex);
 }
 void xRenderDevice::DrawIndexedPrimitive(xPrimitiveType::Enum type, xUInt32 base_vertex, xUInt32 start_index, xUInt32 index_count)
 {
 	pImpl->BindNecessaryData();
 	SetPrimitiveTopology(type);	
-	gDevice->DrawIndexed(index_count, start_index, base_vertex);
+	gDeviceContext->DrawIndexed(index_count, start_index, base_vertex);
 }
 
 void xRenderDevice::Present()

@@ -10,14 +10,14 @@ xVertexBuffer::xVertexBuffer(xSharedPtr<xVertexFormat> vertex_format, size_t ver
 	pImpl->mData = NULL;
 	pImpl->mVertexFormat = vertex_format;
 
-	D3D10_BUFFER_DESC desc;
-	desc.Usage = D3D10_USAGE_DEFAULT;
+	D3D11_BUFFER_DESC desc;
+	desc.Usage = D3D11_USAGE_DEFAULT;
 	desc.ByteWidth = SizeInBytes();
-	desc.BindFlags = D3D10_BIND_VERTEX_BUFFER;
+	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	desc.CPUAccessFlags = 0;
 	desc.MiscFlags = 0;	
 
-	/*D3D10_SUBRESOURCE_DATA initial_data;
+	/*D3D11_SUBRESOURCE_DATA initial_data;
 	initial_data.pSysMem = data;
 	initial_data.SysMemPitch = 0;
 	initial_data.SysMemSlicePitch = 0;*/
@@ -40,7 +40,7 @@ void* xVertexBuffer::Lock()
 	if (pImpl->mData)
 		free(pImpl->mData);
 	pImpl->mData = malloc(SizeInBytes());
-	//HRESULT hr = pImpl->mBuffer->Map(D3D10_MAP_WRITE_DISCARD, 0, &result);
+	//HRESULT hr = pImpl->mBuffer->Map(D3D11_MAP_WRITE_DISCARD, 0, &result);
 	return pImpl->mData;
 }
 
@@ -48,7 +48,7 @@ void xVertexBuffer::Unlock()
 {
 	if (pImpl->mData)
 	{
-		gDevice->UpdateSubresource(pImpl->mBuffer, 0, NULL, pImpl->mData, 0, 0);//->UpdateSubresource(
+		gDeviceContext->UpdateSubresource(pImpl->mBuffer, 0, NULL, pImpl->mData, 0, 0);//->UpdateSubresource(
 		free(pImpl->mData);
 		pImpl->mData = NULL;
 	}

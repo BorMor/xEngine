@@ -4,9 +4,9 @@
 xVertexShader::xVertexShader(const xString& source)
 {
 	pImpl = new Impl;
-	ID3D10Blob*	msgs = 0;
-	D3D10CompileShader(source.c_str(), source.Length(), 0, 0, 0, "main", "vs_4_0", 0, &pImpl->mCompiledShader, &msgs);	//4_1??
-	gDevice->CreateVertexShader(pImpl->mCompiledShader->GetBufferPointer(), pImpl->mCompiledShader->GetBufferSize(), &pImpl->mShader);
+	ID3DBlob*	msgs = 0;
+	HRESULT hr = D3DCompile(source.c_str(), source.Length(), "none", NULL, NULL, "main", "vs_5_0", 0, D3DCOMPILE_EFFECT_ALLOW_SLOW_OPS, &pImpl->mCompiledShader, &msgs );
+	gDevice->CreateVertexShader(pImpl->mCompiledShader->GetBufferPointer(), pImpl->mCompiledShader->GetBufferSize(), NULL, &pImpl->mShader);
 }
 
 xVertexShader::~xVertexShader()

@@ -2,8 +2,8 @@
 
 struct xTexture::Impl
 {
-	ID3D10Resource*				mTexture;
-	ID3D10ShaderResourceView*	mShaderResourceView;
+	ID3D11Resource*				mTexture;
+	ID3D11ShaderResourceView*	mShaderResourceView;
 };
 
 xFORCE_INLINE

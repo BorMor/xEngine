@@ -4,11 +4,11 @@
 xPixelShader::xPixelShader(const xString& source)
 {
 	pImpl = new Impl;
-	ID3D10Blob*	msgs = 0;
-	D3D10CompileShader(source.c_str(), source.Length(), 0, 0, 0, "main", "ps_4_0", 0, &pImpl->mCompiledShader, &msgs);	//4_1??
+	ID3DBlob*	msgs = 0;
+	HRESULT hr = D3DCompile(source.c_str(), source.Length(), "none", NULL, NULL, "main", "ps_5_0", 0, D3DCOMPILE_EFFECT_ALLOW_SLOW_OPS, &pImpl->mCompiledShader, &msgs );
 	if (msgs)
 		OutputDebugString((char*)msgs->GetBufferPointer());
-	gDevice->CreatePixelShader(pImpl->mCompiledShader->GetBufferPointer(), pImpl->mCompiledShader->GetBufferSize(), &pImpl->mShader);
+	gDevice->CreatePixelShader(pImpl->mCompiledShader->GetBufferPointer(), pImpl->mCompiledShader->GetBufferSize(), NULL, &pImpl->mShader);
 }
 
 xPixelShader::~xPixelShader()
