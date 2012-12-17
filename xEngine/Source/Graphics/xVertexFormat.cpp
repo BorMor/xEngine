@@ -8,12 +8,15 @@ size_t GetVertexElementSize(xVertexElementType::Enum type)
 		return sizeof(xVector2);
 	case xVertexElementType::Vector3:
 		return sizeof(xVector3);
+	case xVertexElementType::Vector4:
+		return sizeof(xVector4);
 	case xVertexElementType::Color:
 		return sizeof(xColor);
 	case xVertexElementType::Float:
 		return sizeof(xFloat);
 		break;
 	default:
+		xASSERT(0);
 		return 0;
 	}
 }
